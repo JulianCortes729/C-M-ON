@@ -129,6 +129,7 @@ public class SpiderIA2 : MonoBehaviour
         {
             Fixed_Patrol();
         }
+        DetectAndActivateExplosives();
     }
 
     #endregion
@@ -445,5 +446,20 @@ public class SpiderIA2 : MonoBehaviour
         return playerDeathHandler == null || !playerDeathHandler.isDying;
     }
 
+    #endregion
+
+    #region Explosives
+    private void DetectAndActivateExplosives()
+    {
+        Collider[] nearby = Physics.OverlapSphere(transform.position, 2.5f); // radio ajustable
+        foreach (var col in nearby)
+        {
+            ExplosiveItem item = col.GetComponent<ExplosiveItem>();
+            if (item != null && !item.IsExplosive)
+            {
+                item.ActivateExplosion();
+            }
+        }
+    }
     #endregion
 }

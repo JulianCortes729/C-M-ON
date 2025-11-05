@@ -14,9 +14,15 @@ public class Coin : MonoBehaviour
     // Evento global que notifica a otros sistemas (CoinManager, UI, etc.)
     public static UnityEvent OnCoinCollected = new UnityEvent();
 
-    [Header("Efecto de partículas")]
+    [Header("Efectos (usando MultiParticlePool)")]
+    [Tooltip("Clave del efecto normal en el MultiParticlePool (ej: 'coin')")]
+    [SerializeField] private string normalEffectKey = "coin";
+
+    [Tooltip("Clave del efecto explosivo en el MultiParticlePool (ej: 'explosion')")]
+    [SerializeField] private string explosionEffectKey = "coinExplosion";
+
     [Tooltip("Pool de partículas a usar al recoger la moneda.")]
-    [SerializeField] private ParticlePool particlePool;
+    [SerializeField] private MultiParticlePool pool;
 
     [Header("Ajustes")]
     [Tooltip("Si true, se omite el efecto visual y se destruye la moneda inmediatamente.")]
@@ -25,12 +31,17 @@ public class Coin : MonoBehaviour
     // Cache de componentes (O(1))
     private Collider _collider;
     private Renderer[] _renderers;
+    private ExplosiveItem explosive;
 
     private void Awake()
     {
         // Cachear componentes para evitar búsquedas costosas.
         _collider = GetComponent<Collider>();
         _renderers = GetComponents<Renderer>();
+        explosive = GetComponent<ExplosiveItem>();
+
+        // cachea el pool una sola vez (opcional si hay muchos objetos)
+        pool = FindObjectOfType<MultiParticlePool>();
     }
 
     /// <summary>
@@ -42,33 +53,36 @@ public class Coin : MonoBehaviour
     /// </summary>
     private void OnTriggerEnter(Collider other)
     {
-        // Solo reaccionar ante el jugador
         if (!other.CompareTag("Player"))
             return;
 
-        // Evitar recolección doble
-        if (_collider != null)
-            _collider.enabled = false;
+        bool isExplosive = explosive != null && explosive.IsExplosive;
 
-        // Ocultar visualmente la moneda
+        //explosiva -> solo explosion + muerte del jugador
+        if (isExplosive)
+        {
+            pool?.PlayParticle(explosionEffectKey, transform.position, Quaternion.identity);
+            other.GetComponent<PlayerDeathHandler>()?.Die();
+            Destroy(gameObject);
+            return;
+        }
+
+        //normal -> comportamiento clásico
+        _collider.enabled = false;
+
         foreach (var r in _renderers)
             if (r != null) r.enabled = false;
 
-        // Disparar evento global
         OnCoinCollected?.Invoke();
 
-        // Si se salta el efecto, destruir inmediatamente
         if (skipEffect)
         {
             Destroy(gameObject);
             return;
         }
 
-        // Si existe el pool, reproducir efecto (O(1))
-        if (particlePool != null)
-            particlePool.PlayParticle(transform.position, Quaternion.identity);
-
-        // Destruir moneda (sin esperar efecto)
+        pool?.PlayParticle(normalEffectKey, transform.position, Quaternion.identity);
+        MultiAudioPool.Instance?.Play("coin", transform.position);
         Destroy(gameObject);
     }
 }

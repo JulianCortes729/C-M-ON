@@ -12,9 +12,17 @@ public class MultiAudioPool : MonoBehaviour
     [System.Serializable]
     public class AudioEntry
     {
-        public string key;          // Identificador (ej: "coin", "explosion")
-        public AudioClip clip;      // Clip asociado
-        public float volume = 1f;   // Volumen individual
+        public string key;
+        public AudioClip clip;
+        [Range(0f, 1f)] public float volume = 1f;
+
+        [Header("Ajustes 3D")]
+        [Range(0f, 1f)] public float spatialBlend = 1f; // 1 = 3D, 0 = 2D
+        public AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
+        public float minDistance = 1f;
+        public float maxDistance = 20f;
+        [Range(0f, 5f)] public float dopplerLevel = 0.5f;
+        [Range(0f, 180f)] public float spread = 0f;
     }
 
     [SerializeField] private List<AudioEntry> audioEntries = new List<AudioEntry>();
@@ -57,6 +65,15 @@ public class MultiAudioPool : MonoBehaviour
         source.transform.position = position;
         source.clip = entry.clip;
         source.volume = entry.volume;
+
+        // Aplicar ajustes 3D personalizados
+        source.spatialBlend = entry.spatialBlend;
+        source.rolloffMode = entry.rolloffMode;
+        source.minDistance = entry.minDistance;
+        source.maxDistance = entry.maxDistance;
+        source.dopplerLevel = entry.dopplerLevel;
+        source.spread = entry.spread;
+
         source.Play();
     }
 }

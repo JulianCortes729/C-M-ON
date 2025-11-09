@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5978385690023453525}
   - component: {fileID: 7765546076991934774}
   - component: {fileID: 533330713205224455}
-  - component: {fileID: 3940003645723468976}
+  - component: {fileID: 3910451014934478925}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Untagged
@@ -145,7 +145,7 @@ MonoBehaviour:
   explosionEffectKey: coinExplosion
   pool: {fileID: 0}
   skipEffect: 0
---- !u!114 &3940003645723468976
+--- !u!114 &3910451014934478925
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

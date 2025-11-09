@@ -15,7 +15,7 @@ public class BreakablePlatform : MonoBehaviour
     {
         if (broken) return;
         if (!other.CompareTag(playerTag)) return;
-
+        MultiAudioPool.Instance?.Play("breakPlatform", transform.position);
         Break();
     }
 

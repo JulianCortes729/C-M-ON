@@ -62,6 +62,7 @@ public class Coin : MonoBehaviour
         if (isExplosive)
         {
             pool?.PlayParticle(explosionEffectKey, transform.position, Quaternion.identity);
+            MultiAudioPool.Instance?.Play("coinExplosion", transform.position);
             other.GetComponent<PlayerDeathHandler>()?.Die();
             Destroy(gameObject);
             return;

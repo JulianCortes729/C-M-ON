@@ -1085,7 +1085,7 @@ Transform:
   m_GameObject: {fileID: 4564163900601700228}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 15.8}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1292,7 +1292,7 @@ GameObject:
   - component: {fileID: 6224016011333878265}
   m_Layer: 0
   m_Name: spider_black
-  m_TagString: Untagged
+  m_TagString: Spider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1360,7 +1360,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &4101442466768376670
 BoxCollider:
@@ -1400,9 +1400,14 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  pingPong: 1
+  patrolSpeed: 2
+  patrolPointThreshold: 0.2
   detectionRange: 8
-  moveSpeed: 7
-  returnSpeed: 5
+  chaseSpeed: 5
   edgeCheckDistance: 1
   edgeRayHeight: 0.5
   edgeRayDepth: 1.2
@@ -1410,7 +1415,6 @@ MonoBehaviour:
   minImpactSpeed: 0.3
   stompBounce: 5
   deathDuration: 0.8
-  waitBeforeReturn: 0.5
 --- !u!1 &5245346726286412734
 GameObject:
   m_ObjectHideFlags: 0

@@ -129,7 +129,7 @@ public class SpiderIA2 : MonoBehaviour
         {
             Fixed_Patrol();
         }
-        DetectAndActivateExplosives();
+        //DetectAndActivateExplosives();
     }
 
     #endregion
@@ -448,7 +448,7 @@ public class SpiderIA2 : MonoBehaviour
 
     #endregion
 
-    #region Explosives
+  /*  #region Explosives
     private void DetectAndActivateExplosives()
     {
         Collider[] nearby = Physics.OverlapSphere(transform.position, 2.5f); // radio ajustable
@@ -462,4 +462,5 @@ public class SpiderIA2 : MonoBehaviour
         }
     }
     #endregion
+  */
 }

@@ -21,9 +21,6 @@ public class Coin : MonoBehaviour
     [Tooltip("Clave del efecto explosivo en el MultiParticlePool (ej: 'explosion')")]
     [SerializeField] private string explosionEffectKey = "coinExplosion";
 
-    [Tooltip("Pool de partículas a usar al recoger la moneda.")]
-    [SerializeField] private MultiParticlePool pool;
-
     [Header("Ajustes")]
     [Tooltip("Si true, se omite el efecto visual y se destruye la moneda inmediatamente.")]
     [SerializeField] private bool skipEffect = false;
@@ -40,9 +37,9 @@ public class Coin : MonoBehaviour
         _renderers = GetComponents<Renderer>();
         explosive = GetComponent<ExplosiveItem>();
 
-        // cachea el pool una sola vez (opcional si hay muchos objetos)
-        pool = FindObjectOfType<MultiParticlePool>();
+       
     }
+
 
     /// <summary>
     /// Detecta al jugador y ejecuta la recolección.
@@ -61,7 +58,7 @@ public class Coin : MonoBehaviour
         //explosiva -> solo explosion + muerte del jugador
         if (isExplosive)
         {
-            pool?.PlayParticle(explosionEffectKey, transform.position, Quaternion.identity);
+            MultiParticlePool.Instance?.PlayParticle(explosionEffectKey, transform.position, Quaternion.identity);
             MultiAudioPool.Instance?.Play("coinExplosion", transform.position);
             other.GetComponent<PlayerDeathHandler>()?.Die();
             Destroy(gameObject);
@@ -82,8 +79,11 @@ public class Coin : MonoBehaviour
             return;
         }
 
-        pool?.PlayParticle(normalEffectKey, transform.position, Quaternion.identity);
+        MultiParticlePool.Instance?.PlayParticle(normalEffectKey, transform.position, Quaternion.identity);
         MultiAudioPool.Instance?.Play("coin", transform.position);
         Destroy(gameObject);
     }
+    
+
+    
 }

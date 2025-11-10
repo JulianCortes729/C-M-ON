@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Dash")]
     [SerializeField] private float dashForce = 15f;
     [SerializeField] private float dashDuration = 0.2f;
-    [SerializeField] private GameObject dashTrailPrefab; // Prefab con TrailRenderer
+    [SerializeField] private string dashTrailKey = "dashTrail"; // Key del pool en lugar de prefab
 
     [Header("Double Jump Jetpack")]
     [SerializeField] private int maxJumps = 2;
@@ -300,10 +300,17 @@ public class PlayerMovement : MonoBehaviour
 
         rb.velocity = dashDir * dashForce;
 
-        // Instancia el rastro visual si hay prefab
-        if (dashTrailPrefab != null)
+        //USAR POOL EN LUGAR DE INSTANTIATE
+        if (MultiParticlePool.Instance != null && !string.IsNullOrEmpty(dashTrailKey))
         {
-            dashTrailInstance = Instantiate(dashTrailPrefab, transform.position + Vector3.up * 0.6f, Quaternion.identity, transform);
+            Vector3 spawnPos = transform.position + Vector3.up * 0.6f;
+            dashTrailInstance = MultiParticlePool.Instance.PlayParticle(dashTrailKey, spawnPos, Quaternion.identity);
+
+            if (dashTrailInstance != null)
+            {
+                // Hacer que el trail siga al jugador
+                dashTrailInstance.transform.SetParent(transform);
+            }
         }
     }
 
@@ -317,10 +324,18 @@ public class PlayerMovement : MonoBehaviour
         // Desactiva animación de Dash
         anim.SetBool("IsDashing", false);
 
-        // Destruye el rastro visual
+        //DEVOLVER AL POOL EN LUGAR DE DESTROY
         if (dashTrailInstance != null)
         {
-            Destroy(dashTrailInstance);
+            // Desparentar antes de devolver al pool
+            dashTrailInstance.transform.SetParent(null);
+
+            if (MultiParticlePool.Instance != null && !string.IsNullOrEmpty(dashTrailKey))
+            {
+                MultiParticlePool.Instance.ReturnToPool(dashTrailKey, dashTrailInstance);
+            }
+
+            dashTrailInstance = null;
         }
     }
 }

@@ -58,6 +58,7 @@ public class ExplosiveItem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
         if (!isExplosive) return;
 
         if (other.CompareTag("Player"))
@@ -66,5 +67,12 @@ public class ExplosiveItem : MonoBehaviour
             other.GetComponent<PlayerDeathHandler>()?.Die();
             Destroy(gameObject);
         }
+    }
+
+    // Este método será llamado por el trigger hijo (ver más abajo)
+    public void OnSpiderRangeEntered()
+    {
+        if (!isExplosive)
+            ActivateExplosion();
     }
 }

@@ -40,7 +40,8 @@ public class PlayerMovement : MonoBehaviour
     // Componentes
     private Rigidbody rb;
     private Animator anim;
-    private Camera mainCam;
+    [SerializeField] private Camera mainCam;
+
 
     // Estado de movimiento
     private bool isGrounded;
@@ -70,7 +71,6 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true; // Evita que el Rigidbody se vuelque
         anim = GetComponent<Animator>();
-        mainCam = Camera.main;
 
         // Crear trails de manos una sola vez
         if (handTrailPrefab != null && leftHand != null && rightHand != null)
@@ -99,15 +99,9 @@ public class PlayerMovement : MonoBehaviour
         // Detecta salto - permite saltar solo si hay saltos disponibles
         if (Input.GetButtonDown("Jump"))
         {
-            Debug.Log("TECLA SALTO PRESIONADA | jumpCount actual: " + jumpCount + " | maxJumps: " + maxJumps + " | Puede saltar: " + (jumpCount < maxJumps));
-
             if (jumpCount < maxJumps)
             {
                 PerformJump();
-            }
-            else
-            {
-                Debug.Log("✗ NO PUEDE SALTAR - Ya usó todos los saltos");
             }
         }
 
@@ -222,21 +216,17 @@ public class PlayerMovement : MonoBehaviour
         jumpCount++;
         anim.SetBool("IsJumping", true);
 
-        Debug.Log("SALTO EJECUTADO: " + jumpCount + " de " + maxJumps + " | isGrounded: " + isGrounded);
-
         if (jumpCount == 1)
         {
             // Primer salto normal
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            Debug.Log("→ Primer salto normal ejecutado");
         }
         else if (jumpCount == 2)
         {
             // Segundo salto tipo jetpack
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(Vector3.up * jetpackForce, ForceMode.Impulse);
-            Debug.Log("→ Segundo salto JETPACK ejecutado");
 
             // Activar trails
             if (leftTrail != null)
@@ -257,14 +247,13 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void CheckGrounded()
     {
-        Debug.DrawRay(groundCheck.position, Down * groundCheckDistance, Color.red);
+        //Debug.DrawRay(groundCheck.position, Down * groundCheckDistance, Color.red);
         bool wasGroundedBefore = isGrounded;
         isGrounded = Physics.Raycast(groundCheck.position, Down, groundCheckDistance, groundLayer);
 
         // Solo resetea saltos cuando ATERRIZA (transición de aire a suelo)
         if (isGrounded && !wasGroundedBefore && jumpCount > 0)
         {
-            Debug.Log("✓ ATERRIZÓ - Saltos reseteados de " + jumpCount + " a 0");
             jumpCount = 0;
 
             // Limpiar restos de trails

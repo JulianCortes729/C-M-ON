@@ -12,8 +12,11 @@ public class SpiderTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Trigger detectó: {other.name} con tag: {other.tag}");
+
         if (other.CompareTag("Spider"))
         {
+            Debug.Log("¡Araña detectada! Activando explosivo");
             parentExplosive?.OnSpiderRangeEntered();
         }
     }

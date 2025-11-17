@@ -1393,7 +1393,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 2
+  m_CollisionDetection: 1
 --- !u!65 &7265601073585922085
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1439,7 +1439,7 @@ MonoBehaviour:
   lowJumpMultiplier: 3
   dashForce: 20
   dashDuration: 0.3
-  dashTrailPrefab: {fileID: 6530230846763307734, guid: 382e33a430d9d2742b35d922081259fe, type: 3}
+  dashTrailKey: dashTrail
   maxJumps: 2
   jetpackForce: 10
   handTrailPrefab: {fileID: 483092931361425983, guid: 1955c5e6fb0e1134faeb4bde5ae63897, type: 3}

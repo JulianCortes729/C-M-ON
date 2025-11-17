@@ -2,6 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Controla el movimiento, salto y animaciones del jugador.
+/// Implementa movimiento correcto sobre plataformas móviles sin usar SetParent.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
@@ -17,14 +18,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.5f;
 
     [Header("Gravity Settings")]
-    [SerializeField] private float gravityMultiplier = 2.5f; // Multiplicador de gravedad al caer
-    [SerializeField] private float fallMultiplier = 3f; // Gravedad extra cuando cae
-    [SerializeField] private float lowJumpMultiplier = 2f; // Gravedad cuando sueltas el botón de salto
+    [SerializeField] private float gravityMultiplier = 2.5f;
+    [SerializeField] private float fallMultiplier = 3f;
+    [SerializeField] private float lowJumpMultiplier = 2f;
 
     [Header("Dash")]
     [SerializeField] private float dashForce = 15f;
     [SerializeField] private float dashDuration = 0.2f;
-    [SerializeField] private string dashTrailKey = "dashTrail"; // Key del pool en lugar de prefab
+    [SerializeField] private string dashTrailKey = "dashTrail";
 
     [Header("Double Jump Jetpack")]
     [SerializeField] private int maxJumps = 2;
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform leftHand;
     [SerializeField] private Transform rightHand;
 
+    // Estado de salto y trails
     private int jumpCount = 0;
     private TrailRenderer leftTrail;
     private TrailRenderer rightTrail;
@@ -40,8 +42,7 @@ public class PlayerMovement : MonoBehaviour
     // Componentes
     private Rigidbody rb;
     private Animator anim;
-    [SerializeField] private Camera mainCam;
-
+    private Camera mainCam;
 
     // Estado de movimiento
     private bool isGrounded;
@@ -63,16 +64,23 @@ public class PlayerMovement : MonoBehaviour
     // Parámetro suavizado para animaciones
     private float smoothVerticalVelocity;
 
-    /// <summary>
-    /// Inicializa componentes y configura el Rigidbody.
-    /// </summary>
+    // PLATAFORMAS MÓVILES - seguimiento sin SetParent
+    private Transform currentPlatform;
+    private Vector3 platformLastPosition;
+    private bool isOnPlatform = false;
+    private Vector3 platformVelocity = Vector3.zero;
+
+    #region Unity Lifecycle
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; // Evita que el Rigidbody se vuelque
-        anim = GetComponent<Animator>();
+        rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-        // Crear trails de manos una sola vez
+        anim = GetComponent<Animator>();
+        mainCam = Camera.main;
+
         if (handTrailPrefab != null && leftHand != null && rightHand != null)
         {
             leftTrail = Instantiate(handTrailPrefab, leftHand.position, leftHand.rotation, leftHand)
@@ -85,41 +93,31 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Captura la entrada del usuario y actualiza los parámetros de animación.
-    /// </summary>
     void Update()
     {
-        inputX = Input.GetAxis("Horizontal"); // A-D
-        inputZ = Input.GetAxis("Vertical");   // W-S
+        inputX = Input.GetAxis("Horizontal");
+        inputZ = Input.GetAxis("Vertical");
 
-        // Actualiza animación de correr
         anim.SetBool("IsRunning", inputX != 0 || inputZ != 0);
 
-        // Detecta salto - permite saltar solo si hay saltos disponibles
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && jumpCount < maxJumps)
         {
-            if (jumpCount < maxJumps)
-            {
-                PerformJump();
-            }
+            PerformJump();
         }
 
-        // Detecta Dash en el aire
         if (Input.GetKeyDown(KeyCode.C) && !isGrounded && canDash && !isDashing)
         {
             StartDash();
         }
     }
 
-    /// <summary>
-    /// Actualiza la física, movimiento y animaciones del jugador.
-    /// </summary>
     void FixedUpdate()
     {
         CheckGrounded();
 
-        // Si está dashing, ignora movimiento normal y controla duración
+        // Actualizar velocidad de la plataforma antes de aplicar movimiento
+        UpdatePlatformVelocity();
+
         if (isDashing)
         {
             dashTimer += Time.fixedDeltaTime;
@@ -133,18 +131,15 @@ public class PlayerMovement : MonoBehaviour
         HandleMovement();
         ApplyBetterJumpPhysics();
 
-        // Suaviza el parámetro de velocidad vertical para el Blend Tree
         smoothVerticalVelocity = Mathf.Lerp(smoothVerticalVelocity, rb.velocity.y, 0.2f);
         anim.SetFloat("VerticalVelocity", smoothVerticalVelocity);
 
-        // Desactiva animación de salto solo al aterrizar y permite dash en el próximo salto
         if (!wasGrounded && isGrounded)
         {
             anim.SetBool("IsJumping", false);
             canDash = true;
         }
 
-        // Apagar trails cuando empieza a caer
         if (rb.velocity.y < 0f)
         {
             if (leftTrail != null) leftTrail.emitting = false;
@@ -154,37 +149,49 @@ public class PlayerMovement : MonoBehaviour
         wasGrounded = isGrounded;
     }
 
+    #endregion
+
+    #region Movement & Physics
+
     /// <summary>
-    /// Aplica física de salto más realista con gravedad variable.
+    /// Calcula la velocidad de la plataforma a partir de su delta de posición desde el último FixedUpdate.
     /// </summary>
+    private void UpdatePlatformVelocity()
+    {
+        if (isOnPlatform && currentPlatform != null)
+        {
+            Vector3 delta = currentPlatform.position - platformLastPosition;
+            platformVelocity = delta / Mathf.Max(Time.fixedDeltaTime, 0.0001f);
+            platformLastPosition = currentPlatform.position;
+        }
+        else
+        {
+            platformVelocity = Vector3.zero;
+        }
+    }
+
     private void ApplyBetterJumpPhysics()
     {
         if (rb.velocity.y < 0)
         {
-            // Caída más rápida cuando va hacia abajo
             rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
         else if (rb.velocity.y > 0)
         {
             if (jumpCount == 2 && !Input.GetButton("Jump"))
             {
-                // Salto más corto si sueltas el botón SOLO en el segundo salto (jetpack)
                 rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
             }
             else if (jumpCount == 1)
             {
-                // Primer salto: aplica gravedad normal pero ligeramente aumentada para que no flote
                 rb.velocity += Vector3.up * Physics.gravity.y * (gravityMultiplier - 1) * Time.fixedDeltaTime;
             }
         }
     }
 
-    /// <summary>
-    /// Mueve al jugador según la entrada y la orientación de la cámara.
-    /// </summary>
     private void HandleMovement()
     {
-        // Calcula dirección relativa a la cámara
+        // Dirección relativa a la cámara (solo horizontal)
         Vector3 camForward = mainCam.transform.forward;
         camForward.y = 0;
         camForward.Normalize();
@@ -195,22 +202,32 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 moveDir = (camForward * inputZ + camRight * inputX).normalized;
 
-        // Aplica velocidad al Rigidbody
-        Vector3 velocity = moveDir * moveSpeed;
-        velocity.y = rb.velocity.y; // Mantiene la velocidad vertical actual
-        rb.velocity = velocity;
+        // Velocidad horizontal del jugador
+        Vector3 horizontalVel = moveDir * moveSpeed;
 
-        // Rota el jugador hacia la dirección de movimiento
-        if (moveDir.magnitude > 0.1f)
+        // Sumar velocidad horizontal de la plataforma para mantener la posición relativa
+        if (isOnPlatform)
+        {
+            Vector3 platVel = platformVelocity;
+            platVel.y = 0f;
+            horizontalVel += platVel;
+        }
+
+        // Mantener componente vertical
+        Vector3 newVel = horizontalVel;
+        newVel.y = rb.velocity.y;
+
+        // Aplicar al Rigidbody
+        rb.velocity = newVel;
+
+        // Rotación suave hacia el movimiento
+        if (moveDir.sqrMagnitude > 0.01f)
         {
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, Time.fixedDeltaTime * 10f));
         }
     }
 
-    /// <summary>
-    /// Ejecuta el salto según el número de saltos realizados.
-    /// </summary>
     private void PerformJump()
     {
         jumpCount++;
@@ -218,17 +235,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (jumpCount == 1)
         {
-            // Primer salto normal
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         else if (jumpCount == 2)
         {
-            // Segundo salto tipo jetpack
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(Vector3.up * jetpackForce, ForceMode.Impulse);
 
-            // Activar trails
             if (leftTrail != null)
             {
                 leftTrail.Clear();
@@ -242,21 +256,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Verifica si el jugador está en el suelo usando un Raycast.
-    /// </summary>
     private void CheckGrounded()
     {
-        //Debug.DrawRay(groundCheck.position, Down * groundCheckDistance, Color.red);
+        Debug.DrawRay(groundCheck.position, Down * groundCheckDistance, Color.red);
+
         bool wasGroundedBefore = isGrounded;
         isGrounded = Physics.Raycast(groundCheck.position, Down, groundCheckDistance, groundLayer);
 
-        // Solo resetea saltos cuando ATERRIZA (transición de aire a suelo)
+        // Resetear saltos al aterrizar
         if (isGrounded && !wasGroundedBefore && jumpCount > 0)
         {
             jumpCount = 0;
 
-            // Limpiar restos de trails
             if (leftTrail != null)
             {
                 leftTrail.Clear();
@@ -270,61 +281,96 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Inicia el Dash en el aire y crea el rastro visual.
-    /// </summary>
+    #endregion
+
+    #region Dash
+
     private void StartDash()
     {
         isDashing = true;
         canDash = false;
         dashTimer = 0f;
 
-        // Activa animación de Dash
         anim.SetBool("IsDashing", true);
 
-        // Calcula dirección de dash (hacia adelante según el Player)
         Vector3 dashDir = transform.forward;
-        dashDir.y = 0;
+        dashDir.y = 0f;
         dashDir.Normalize();
 
         rb.velocity = dashDir * dashForce;
 
-        //USAR POOL EN LUGAR DE INSTANTIATE
         if (MultiParticlePool.Instance != null && !string.IsNullOrEmpty(dashTrailKey))
         {
             Vector3 spawnPos = transform.position + Vector3.up * 0.6f;
             dashTrailInstance = MultiParticlePool.Instance.PlayParticle(dashTrailKey, spawnPos, Quaternion.identity);
-
             if (dashTrailInstance != null)
-            {
-                // Hacer que el trail siga al jugador
                 dashTrailInstance.transform.SetParent(transform);
-            }
         }
     }
 
-    /// <summary>
-    /// Finaliza el Dash y elimina el rastro visual.
-    /// </summary>
     private void EndDash()
     {
         isDashing = false;
-
-        // Desactiva animación de Dash
         anim.SetBool("IsDashing", false);
 
-        //DEVOLVER AL POOL EN LUGAR DE DESTROY
         if (dashTrailInstance != null)
         {
-            // Desparentar antes de devolver al pool
             dashTrailInstance.transform.SetParent(null);
-
             if (MultiParticlePool.Instance != null && !string.IsNullOrEmpty(dashTrailKey))
-            {
                 MultiParticlePool.Instance.ReturnToPool(dashTrailKey, dashTrailInstance);
-            }
 
             dashTrailInstance = null;
         }
     }
+
+    #endregion
+
+    #region Platform Collision
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("MovingPlatform")) return;
+
+        // Determinar si el contacto tiene una normal que apunta hacia arriba (estamos encima)
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                isOnPlatform = true;
+                currentPlatform = collision.transform;
+                platformLastPosition = currentPlatform.position;
+                break;
+            }
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("MovingPlatform") || isOnPlatform) return;
+
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                isOnPlatform = true;
+                currentPlatform = collision.transform;
+                platformLastPosition = currentPlatform.position;
+                break;
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("MovingPlatform")) return;
+
+        if (currentPlatform == collision.transform)
+        {
+            isOnPlatform = false;
+            currentPlatform = null;
+            platformVelocity = Vector3.zero;
+        }
+    }
+
+    #endregion
 }

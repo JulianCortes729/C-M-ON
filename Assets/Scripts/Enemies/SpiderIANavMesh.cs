@@ -519,6 +519,9 @@ public class SpiderIANavMesh : MonoBehaviour
         // Matar al jugador
         playerDeathHandler?.Die();
 
+        //sonido de ataque
+        MultiAudioPool.Instance?.Play("spiderAttack", transform.position);
+
 
         animator.SetBool("IsChase", false);
         // Esperar a que termine la animación de muerte y el fade

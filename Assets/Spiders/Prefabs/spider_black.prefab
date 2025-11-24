@@ -1371,7 +1371,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 400
-  m_StoppingDistance: 0
+  m_StoppingDistance: 10
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -1400,8 +1400,9 @@ MonoBehaviour:
   patrolSpeed: 3
   waypointReachedDistance: 0.5
   waitTimeAtWaypoint: 0
-  detectionRange: 7
-  chaseSpeed: 7
+  detectionRange: 10
+  lostPlayerRange: 15
+  chaseSpeed: 8
   stopChaseDistance: 0.5
   returnToPatrolDelay: 0.5
   stompHeightMargin: 0.3

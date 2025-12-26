@@ -1,44 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+    // PROPIEDAD ESTÁTICA: Acceso global desde cualquier script
+    public static SceneLoader Instance { get; private set; }
 
     private SceneFader fader;
 
     private void Awake()
     {
+        // Implementación Singleton clásica
+        if (Instance == null)
+        {
+            Instance = this;
+            // Opcional: Si este script va solo en un objeto, descomenta esto:
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject); // Evitar duplicados si recargas la escena con el Manager dentro
+            return;
+        }
+
+        // Buscamos el fader una sola vez al inicio
         fader = FindObjectOfType<SceneFader>();
     }
 
-    // Cargar usando enum
     public void LoadScene(GameScenes scene)
     {
-        string sceneName = scene.ToString();
-        if (!Application.CanStreamedLevelBeLoaded(sceneName))
-        {
-            Debug.LogError($"La escena '{sceneName}' no está en Build Settings.");
-            return;
-        }
+        // Seguridad: Si el fader se perdió (porque era de una escena vieja), búscalo de nuevo
+        if (fader == null) fader = FindObjectOfType<SceneFader>();
 
         if (fader != null)
             fader.FadeToScene(scene);
         else
-            SceneManager.LoadScene(sceneName);
+            SceneManager.LoadScene(scene.ToString());
     }
 
-    // Recargar la escena actual
     public void ReloadCurrentScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (fader == null) fader = FindObjectOfType<SceneFader>();
+
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        // Si quieres usar fade para recargar:
+        // fader.FadeToScene(currentScene); 
+        // Por simplicidad, carga directa:
+        SceneManager.LoadScene(currentScene);
     }
 
-    // Salir del juego
     public void QuitGame()
     {
-        Debug.Log("Cerrando juego...");
         Application.Quit();
     }
 }

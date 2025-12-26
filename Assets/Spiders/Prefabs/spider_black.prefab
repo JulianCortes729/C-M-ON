@@ -1400,7 +1400,7 @@ MonoBehaviour:
   patrolSpeed: 3
   waypointReachedDistance: 0.5
   waitTimeAtWaypoint: 0
-  detectionRange: 10
+  detectionRange: 12
   lostPlayerRange: 15
   chaseSpeed: 8
   stopChaseDistance: 0.5

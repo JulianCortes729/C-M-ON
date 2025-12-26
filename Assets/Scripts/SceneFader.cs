@@ -127,4 +127,18 @@ public class SceneFader : MonoBehaviour
         // Fade-in
         yield return SceneFader.Instance.Fade(0);
     }
+
+
+
+    // Sobrecarga para aceptar Strings (usado por la Intro)
+    public void FadeToScene(string sceneName)
+    {
+        StartCoroutine(FadeSceneCoroutine(sceneName));
+    }
+
+    private IEnumerator FadeSceneCoroutine(string sceneName)
+    {
+        yield return Fade(1);
+        SceneManager.LoadScene(sceneName);
+    }
 }

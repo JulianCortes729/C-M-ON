@@ -1,29 +1,70 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameOverManager : MonoBehaviour
 {
+    [Header("UI References")]
     [SerializeField] private Button restartButton;
-    [SerializeField] private SceneLoader sceneLoader;
+    [SerializeField] private Button quitButton; // Supongamos que tienes uno
+
+    // YA NO NECESITAMOS ARRASTRAR EL SCENELOADER
+    // [SerializeField] private SceneLoader sceneLoader; <--- BORRADO
 
     private void Start()
     {
-        restartButton.onClick.AddListener(RestartGame);
+        // BINDING POR CÓDIGO:
+        // Le decimos al botón qué hacer usando C#. Esto es mucho más estable.
+
+        if (restartButton != null)
+        {
+            restartButton.onClick.AddListener(HandleRestart);
+        }
+
+        if (quitButton != null)
+        {
+            quitButton.onClick.AddListener(HandleQuit);
+        }
     }
 
-    private void RestartGame()
+    // Funciones "Wrapper" para llamar a los Singletons
+    private void HandleRestart()
     {
-        // Reiniciar sistemas persistentes
-        if (LifeManager.Instance != null)
-            LifeManager.Instance.ResetLives();
+        // 1. Resetear lógica
+        ResetGameState();
 
-        if (CoinManager.Instance != null)
-            CoinManager.Instance.ResetCoins();
+        // 2. Usar el Singleton directamente
+        if (SceneLoader.Instance != null)
+        {
+            SceneLoader.Instance.LoadScene(GameScenes.Level1);
+        }
+        else
+        {
+            Debug.LogError("SceneLoader Instance no encontrada. Asegúrate de iniciar el juego desde el MainMenu o que exista el GameManager.");
+            // Fallback de emergencia
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+        }
+    }
 
-        // Cargar la escena principal con fade
-        sceneLoader.LoadScene(GameScenes.Level1);
+    private void HandleQuit()
+    {
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.QuitGame();
+    }
+
+    private void ResetGameState()
+    {
+        // Asegurar tiempo normal
+        Time.timeScale = 1f;
+
+        // Resetear Managers usando sus Singletons
+        if (LifeManager.Instance != null) LifeManager.Instance.ResetLives();
+        if (CoinManager.Instance != null) CoinManager.Instance.ResetCoins();
+    }
+
+    // Limpieza de eventos para evitar errores de memoria
+    private void OnDestroy()
+    {
+        if (restartButton != null) restartButton.onClick.RemoveListener(HandleRestart);
+        if (quitButton != null) quitButton.onClick.RemoveListener(HandleQuit);
     }
 }

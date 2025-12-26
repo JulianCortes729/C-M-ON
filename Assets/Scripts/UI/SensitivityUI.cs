@@ -3,15 +3,16 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Manages the sensitivity settings UI panel.
-/// Synchronizes slider values with CursorController and updates display labels.
+/// Gestiona la parte visual. Escucha al CursorController.
 /// </summary>
 public class SensitivityUI : MonoBehaviour
 {
     #region Serialized Fields
 
     [Header("References")]
-    [SerializeField] private CursorController cursorController;
+    // Referencia al panel HIJO que contiene las imágenes y sliders.
+    // ESTE es el objeto que se apaga y prende.
+    [SerializeField] private GameObject visualContent;
 
     [Header("UI Elements")]
     [SerializeField] private Slider horizontalSlider;
@@ -21,7 +22,9 @@ public class SensitivityUI : MonoBehaviour
 
     #endregion
 
-    #region Constants
+    #region Private Fields
+
+    private CursorController cursorController;
 
     private const string PREF_KEY_HORIZONTAL = "MouseSensitivityX";
     private const string PREF_KEY_VERTICAL = "MouseSensitivityY";
@@ -32,125 +35,103 @@ public class SensitivityUI : MonoBehaviour
 
     #region Unity Lifecycle
 
-    private void Start()
+    private void Awake()
     {
-        LoadSavedValues();
-        ValidateReferences();
+        // 1. Buscar al cerebro (GameManager)
+        cursorController = FindObjectOfType<CursorController>();
+
+        if (cursorController == null)
+            Debug.LogError("[SensitivityUI] ¡No se encontró CursorController en la escena!");
     }
 
-    /// <summary>
-    /// Reloads saved values when panel is activated.
-    /// Ensures UI reflects current settings after scene transitions.
-    /// </summary>
     private void OnEnable()
     {
+        if (cursorController != null)
+        {
+            // 2. Suscribirse al evento para escuchar cambios futuros
+            cursorController.OnMenuStateChanged += HandleMenuStateChanged;
+        }
+    }
+
+    private void Start()
+    {
+        // Cargar valores de los sliders
         LoadSavedValues();
+        ValidateReferences();
+
+        // 3. SINCRONIZACIÓN INICIAL (CRUCIAL)
+        // Preguntamos al controller: "¿Cómo estás ahora mismo?" y actualizamos la visual.
+        // Esto arregla el bug de que el menú quede abierto si la escena se reinicia.
+        if (cursorController != null)
+        {
+            HandleMenuStateChanged(cursorController.IsSettingsOpen);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (cursorController != null)
+        {
+            // 4. Desuscribirse para evitar errores de memoria
+            cursorController.OnMenuStateChanged -= HandleMenuStateChanged;
+        }
     }
 
     #endregion
 
-    #region Initialization
+    #region Event Handlers
 
-    /// <summary>
-    /// Validates that all required references are assigned.
-    /// Logs warnings for missing components to aid debugging.
-    /// Time Complexity: O(1)
-    /// </summary>
-    private void ValidateReferences()
+    // Esta función se llama automáticamente cuando el Controller avisa, 
+    // O manualmente en el Start para sincronizar.
+    private void HandleMenuStateChanged(bool isOpen)
     {
-        if (cursorController == null)
-            Debug.LogWarning("[SensitivityUI] CursorController reference not assigned!");
-
-        if (horizontalSlider == null)
-            Debug.LogWarning("[SensitivityUI] Horizontal Slider reference not assigned!");
-
-        if (verticalSlider == null)
-            Debug.LogWarning("[SensitivityUI] Vertical Slider reference not assigned!");
-
-        if (horizontalLabel == null)
-            Debug.LogWarning("[SensitivityUI] Horizontal Label reference not assigned!");
-
-        if (verticalLabel == null)
-            Debug.LogWarning("[SensitivityUI] Vertical Label reference not assigned!");
+        if (visualContent != null)
+        {
+            visualContent.SetActive(isOpen);
+        }
     }
 
-    /// <summary>
-    /// Loads saved sensitivity values from PlayerPrefs and updates UI.
-    /// Time Complexity: O(1)
-    /// </summary>
+    public void UpdateHorizontalSpeed(float value)
+    {
+        if (cursorController != null) cursorController.SetHorizontalSpeed(value);
+        UpdateLabels();
+    }
+
+    public void UpdateVerticalSpeed(float value)
+    {
+        if (cursorController != null) cursorController.SetVerticalSpeed(value);
+        UpdateLabels();
+    }
+
+    #endregion
+
+    #region Internal Logic
+
     private void LoadSavedValues()
     {
         float savedHorizontal = PlayerPrefs.GetFloat(PREF_KEY_HORIZONTAL, DEFAULT_HORIZONTAL);
         float savedVertical = PlayerPrefs.GetFloat(PREF_KEY_VERTICAL, DEFAULT_VERTICAL);
 
-        if (horizontalSlider != null)
-        {
-            horizontalSlider.value = savedHorizontal;
-        }
-
-        if (verticalSlider != null)
-        {
-            verticalSlider.value = savedVertical;
-        }
+        if (horizontalSlider != null) horizontalSlider.value = savedHorizontal;
+        if (verticalSlider != null) verticalSlider.value = savedVertical;
 
         UpdateLabels();
     }
 
-    #endregion
-
-    #region Public Methods (Called by UI Events)
-
-    /// <summary>
-    /// Updates horizontal camera sensitivity.
-    /// Called by horizontal slider OnValueChanged event.
-    /// Time Complexity: O(1)
-    /// </summary>
-    /// <param name="value">New horizontal sensitivity value</param>
-    public void UpdateHorizontalSpeed(float value)
-    {
-        if (cursorController != null)
-        {
-            cursorController.SetHorizontalSpeed(value);
-        }
-
-        UpdateLabels();
-    }
-
-    /// <summary>
-    /// Updates vertical camera sensitivity.
-    /// Called by vertical slider OnValueChanged event.
-    /// Time Complexity: O(1)
-    /// </summary>
-    /// <param name="value">New vertical sensitivity value</param>
-    public void UpdateVerticalSpeed(float value)
-    {
-        if (cursorController != null)
-        {
-            cursorController.SetVerticalSpeed(value);
-        }
-
-        UpdateLabels();
-    }
-
-    #endregion
-
-    #region Label Updates
-
-    /// <summary>
-    /// Updates label text to display current slider values.
-    /// Time Complexity: O(1)
-    /// </summary>
     private void UpdateLabels()
     {
         if (horizontalLabel != null && horizontalSlider != null)
-        {
             horizontalLabel.text = $"Sensibilidad Horizontal: {horizontalSlider.value:F1}";
-        }
 
         if (verticalLabel != null && verticalSlider != null)
-        {
             verticalLabel.text = $"Sensibilidad Vertical: {verticalSlider.value:F1}";
-        }
+    }
+
+    private void ValidateReferences()
+    {
+        if (visualContent == null) Debug.LogWarning("[SensitivityUI] ¡Falta asignar 'Visual Content'!");
+        if (horizontalSlider == null) Debug.LogWarning("[SensitivityUI] Falta Slider Horizontal");
+        // ... resto de validaciones
     }
 
     #endregion

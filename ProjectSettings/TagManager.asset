@@ -7,6 +7,7 @@ TagManager:
   - Building
   - Spider
   - MovingPlatform
+  - Boss
   layers:
   - Default
   - TransparentFX

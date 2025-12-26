@@ -6,5 +6,6 @@ public enum GameScenes
 {
     MainMenu,
     Level1,
-    GameOver
+    GameOver,
+    Win
 }

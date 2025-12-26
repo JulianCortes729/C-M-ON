@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 0.5f;
+    [SerializeField] private float groundCheckRadius = 0.15f;         // SphereCast más estable
 
     [Header("Gravity Settings")]
     [SerializeField] private float gravityMultiplier = 2.5f;
@@ -118,6 +119,8 @@ public class PlayerMovement : MonoBehaviour
         // Actualizar velocidad de la plataforma antes de aplicar movimiento
         UpdatePlatformVelocity();
 
+    
+
         if (isDashing)
         {
             dashTimer += Time.fixedDeltaTime;
@@ -131,7 +134,7 @@ public class PlayerMovement : MonoBehaviour
         HandleMovement();
         ApplyBetterJumpPhysics();
 
-        smoothVerticalVelocity = Mathf.Lerp(smoothVerticalVelocity, rb.velocity.y, 0.2f);
+        smoothVerticalVelocity =Mathf.Lerp(smoothVerticalVelocity, rb.velocity.y, 0.2f);
         anim.SetFloat("VerticalVelocity", smoothVerticalVelocity);
 
         if (!wasGrounded && isGrounded)
@@ -144,7 +147,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (leftTrail != null) leftTrail.emitting = false;
             if (rightTrail != null) rightTrail.emitting = false;
+         
         }
+        
 
         wasGrounded = isGrounded;
     }
@@ -260,9 +265,25 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.DrawRay(groundCheck.position, Down * groundCheckDistance, Color.red);
 
-        bool wasGroundedBefore = isGrounded;
-        isGrounded = Physics.Raycast(groundCheck.position, Down, groundCheckDistance, groundLayer);
+        anim.SetBool("IsGrounded", isGrounded);
 
+        bool wasGroundedBefore = isGrounded;
+        isGrounded = Physics.SphereCast(
+                        groundCheck.position,
+                        0.15f,
+                        Vector3.down,
+                        out _,
+                        groundCheckDistance,
+                        groundLayer
+                    );
+
+        DrawSphereCast(
+            groundCheck.position,
+            groundCheckRadius,
+            Vector3.down,
+            groundCheckDistance,
+            isGrounded
+        );
         // Resetear saltos al aterrizar
         if (isGrounded && !wasGroundedBefore && jumpCount > 0)
         {
@@ -373,4 +394,49 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #endregion
+
+
+    private void DrawSphereCast(Vector3 origin, float radius, Vector3 direction, float distance, bool hit)
+    {
+        Color color = hit ? Color.green : Color.red;
+
+        // Dibuja la línea del cast
+        Debug.DrawLine(origin, origin + direction * distance, color);
+
+        // Dibuja la esfera superior (inicio)
+        DrawWireSphere(origin, radius, color);
+
+        // Dibuja la esfera inferior (final del cast)
+        DrawWireSphere(origin + direction * distance, radius, color);
+
+
+    }
+
+    private void DrawWireSphere(Vector3 center, float radius, Color color)
+    {
+        int segments = 16;
+        float step = 360f / segments;
+
+        // Dibujar en los ejes X, Y, Z
+        for (int i = 0; i < segments; i++)
+        {
+            float angle1 = step * i;
+            float angle2 = step * (i + 1);
+
+            // Círculo en XZ
+            Vector3 p1 = center + new Vector3(Mathf.Cos(angle1 * Mathf.Deg2Rad), 0, Mathf.Sin(angle1 * Mathf.Deg2Rad)) * radius;
+            Vector3 p2 = center + new Vector3(Mathf.Cos(angle2 * Mathf.Deg2Rad), 0, Mathf.Sin(angle2 * Mathf.Deg2Rad)) * radius;
+            Debug.DrawLine(p1, p2, color);
+
+            // Círculo en XY
+            p1 = center + new Vector3(Mathf.Cos(angle1 * Mathf.Deg2Rad), Mathf.Sin(angle1 * Mathf.Deg2Rad), 0) * radius;
+            p2 = center + new Vector3(Mathf.Cos(angle2 * Mathf.Deg2Rad), Mathf.Sin(angle2 * Mathf.Deg2Rad), 0) * radius;
+            Debug.DrawLine(p1, p2, color);
+
+            // Círculo en YZ
+            p1 = center + new Vector3(0, Mathf.Cos(angle1 * Mathf.Deg2Rad), Mathf.Sin(angle1 * Mathf.Deg2Rad)) * radius;
+            p2 = center + new Vector3(0, Mathf.Cos(angle2 * Mathf.Deg2Rad), Mathf.Sin(angle2 * Mathf.Deg2Rad)) * radius;
+            Debug.DrawLine(p1, p2, color);
+        }
+    }
 }

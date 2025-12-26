@@ -1,9 +1,11 @@
-using UnityEngine;
 using Cinemachine;
+using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Manages cursor locking/unlocking and camera sensitivity across game scenes.
-/// Automatically pauses in non-gameplay scenes and persists user sensitivity preferences.
+/// Gestiona el bloqueo del cursor, la sensibilidad y el estado del menú.
+/// Actúa como la "Fuente de la Verdad" para la UI.
 /// </summary>
 public class CursorController : MonoBehaviour
 {
@@ -11,7 +13,6 @@ public class CursorController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CinemachineFreeLook freeLookCamera;
-    [SerializeField] private GameObject sensitivityPanel;
 
     [Header("Input Keys")]
     [SerializeField] private KeyCode settingsKey = KeyCode.Tab;
@@ -21,6 +22,9 @@ public class CursorController : MonoBehaviour
     [SerializeField] private float defaultHorizontalSpeed = 2f;
     [SerializeField] private float defaultVerticalSpeed = 0.5f;
 
+    // EVENTO: La UI se suscribirá a esto para saber cuándo abrirse/cerrarse
+    public event Action<bool> OnMenuStateChanged;
+
     #endregion
 
     #region Private Fields
@@ -28,43 +32,51 @@ public class CursorController : MonoBehaviour
     private float horizontalSpeed;
     private float verticalSpeed;
     private bool isSettingsOpen;
-    private bool isPaused;
+    private bool isPaused; // Determina si estamos en una escena que NO es de juego
 
-    // PlayerPrefs keys
+    // Keys para guardar datos
     private const string PREF_KEY_HORIZONTAL = "MouseSensitivityX";
     private const string PREF_KEY_VERTICAL = "MouseSensitivityY";
 
     #endregion
 
+    #region Public Properties
+
+    public bool IsSettingsOpen => isSettingsOpen;
+
+    #endregion
+
     #region Unity Lifecycle
+
+    private void Awake()
+    {
+        isSettingsOpen = false;
+    }
 
     private void Start()
     {
         LoadSavedSensitivity();
         CheckScene();
         ApplySpeeds();
-
-        if (sensitivityPanel != null)
-        {
-            sensitivityPanel.SetActive(false);
-        }
     }
 
     private void OnEnable()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Update()
     {
+        // Si estamos en GameOver o Menú Principal, no procesamos inputs de bloqueo/desbloqueo
         if (isPaused) return;
 
         HandleInput();
+
         ApplySpeeds();
     }
 
@@ -72,51 +84,49 @@ public class CursorController : MonoBehaviour
 
     #region Scene Management
 
-    /// <summary>
-    /// Called when a new scene is loaded. Updates cursor state based on scene type.
-    /// </summary>
-    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         CheckScene();
     }
 
-    /// <summary>
-    /// Determines if current scene is gameplay and adjusts cursor accordingly.
-    /// </summary>
     private void CheckScene()
     {
-        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string currentScene = SceneManager.GetActiveScene().name;
+        // IMPORTANTE: Asegúrate de que "Level1" es el nombre exacto de tu escena
         bool isGameplayScene = currentScene.Contains("Level1");
 
         if (!isGameplayScene)
         {
+            // --- MODO MENÚ (GameOver, MainMenu, etc) ---
+            isPaused = true; // Esto detiene el Update() para que los clics no re-bloqueen el cursor
+
+            // 1. Lógicamente cerramos el menú de sensibilidad (sin efectos secundarios de cursor)
+            isSettingsOpen = false;
+            OnMenuStateChanged?.Invoke(false); // Avisamos a la UI para que se oculte si estaba abierta
+
+            // 2. FÍSICAMENTE desbloqueamos el cursor para poder usar botones
             UnlockCursor();
-            isPaused = true;
         }
         else
         {
+            // --- MODO JUEGO (Level1) ---
+            isPaused = false;
+
+            // Al entrar al nivel, usamos SetMenuState(false) 
+            // Esto cierra el menú Y bloquea el cursor automáticamente para jugar
+            SetMenuState(false);
+
             FindCameraIfNeeded();
             LoadSavedSensitivity();
             ApplySpeeds();
-            LockCursor();
-            isPaused = false;
         }
     }
 
-    /// <summary>
-    /// Searches for FreeLook camera in scene if reference is lost.
-    /// Useful when controller persists across scene loads via DontDestroyOnLoad.
-    /// </summary>
     private void FindCameraIfNeeded()
     {
         if (freeLookCamera == null)
         {
             freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
-
-            if (freeLookCamera == null)
-            {
-                Debug.LogError("[CursorController] CinemachineFreeLook not found in scene!");
-            }
         }
     }
 
@@ -124,10 +134,6 @@ public class CursorController : MonoBehaviour
 
     #region Input Handling
 
-    /// <summary>
-    /// Processes user input for settings menu and cursor unlocking.
-    /// Time Complexity: O(1)
-    /// </summary>
     private void HandleInput()
     {
         if (Input.GetKeyDown(settingsKey))
@@ -146,50 +152,40 @@ public class CursorController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Toggles sensitivity settings panel visibility and cursor state.
-    /// </summary>
     private void ToggleSettings()
     {
-        isSettingsOpen = !isSettingsOpen;
+        SetMenuState(!isSettingsOpen);
+    }
+
+    /// <summary>
+    /// Método centralizado que cambia el estado y avisa a todos los suscriptores.
+    /// </summary>
+    private void SetMenuState(bool isOpen)
+    {
+        isSettingsOpen = isOpen;
 
         if (isSettingsOpen)
         {
             UnlockCursor();
-            if (sensitivityPanel != null)
-            {
-                sensitivityPanel.SetActive(true);
-            }
         }
         else
         {
-            if (sensitivityPanel != null)
-            {
-                sensitivityPanel.SetActive(false);
-            }
             LockCursor();
         }
+
+        OnMenuStateChanged?.Invoke(isSettingsOpen);
     }
 
     #endregion
 
-    #region Sensitivity Management
+    #region Sensitivity & Cursor Logic
 
-    /// <summary>
-    /// Loads saved sensitivity values from PlayerPrefs or uses defaults.
-    /// Time Complexity: O(1)
-    /// </summary>
     private void LoadSavedSensitivity()
     {
         horizontalSpeed = PlayerPrefs.GetFloat(PREF_KEY_HORIZONTAL, defaultHorizontalSpeed);
         verticalSpeed = PlayerPrefs.GetFloat(PREF_KEY_VERTICAL, defaultVerticalSpeed);
     }
 
-    /// <summary>
-    /// Sets horizontal camera sensitivity and persists to PlayerPrefs.
-    /// Called by UI slider events.
-    /// Time Complexity: O(1)
-    /// </summary>
     public void SetHorizontalSpeed(float value)
     {
         horizontalSpeed = value;
@@ -197,11 +193,6 @@ public class CursorController : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// Sets vertical camera sensitivity and persists to PlayerPrefs.
-    /// Called by UI slider events.
-    /// Time Complexity: O(1)
-    /// </summary>
     public void SetVerticalSpeed(float value)
     {
         verticalSpeed = value;
@@ -209,17 +200,9 @@ public class CursorController : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// Applies current sensitivity values to the FreeLook camera.
-    /// Automatically finds camera reference if lost.
-    /// Time Complexity: O(1) if camera cached, O(n) if search needed
-    /// </summary>
     private void ApplySpeeds()
     {
-        if (freeLookCamera == null)
-        {
-            freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
-        }
+        if (freeLookCamera == null) FindCameraIfNeeded();
 
         if (freeLookCamera != null)
         {
@@ -228,25 +211,12 @@ public class CursorController : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region Cursor State Management
-
-    /// <summary>
-    /// Locks cursor to center of screen and hides it.
-    /// Essential for FPS-style camera control.
-    /// Time Complexity: O(1)
-    /// </summary>
     private void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    /// <summary>
-    /// Unlocks cursor and makes it visible for UI interaction.
-    /// Time Complexity: O(1)
-    /// </summary>
     private void UnlockCursor()
     {
         Cursor.lockState = CursorLockMode.None;

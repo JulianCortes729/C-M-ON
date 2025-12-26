@@ -38,8 +38,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: IsJumping
+  - m_ConditionMode: 1
+    m_ConditionEvent: IsGrounded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4384205494215361464}
@@ -51,7 +51,7 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 0
   m_HasExitTime: 0
-  m_HasFixedDuration: 1
+  m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
@@ -63,8 +63,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: IsJumping
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsGrounded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -9205677636697357794}
@@ -76,7 +76,7 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 0
   m_HasExitTime: 0
-  m_HasFixedDuration: 1
+  m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
@@ -138,8 +138,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: IsJumping
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsGrounded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -9205677636697357794}
@@ -226,7 +226,7 @@ AnimatorStateMachine:
     m_Position: {x: 310, y: 470, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -9205677636697357794}
-    m_Position: {x: 540, y: 240, z: 0}
+    m_Position: {x: 580, y: 220, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2827521654871031044}
     m_Position: {x: 710, y: 470, z: 0}
@@ -239,7 +239,7 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 290, y: -100, z: 0}
+  m_AnyStatePosition: {x: 290, y: -110, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 1350, y: -110, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
@@ -384,6 +384,12 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: Shoot
     m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: IsGrounded
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -605,8 +611,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: IsJumping
+  - m_ConditionMode: 1
+    m_ConditionEvent: IsGrounded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2825141969646832864}
@@ -618,7 +624,7 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 0
   m_HasExitTime: 0
-  m_HasFixedDuration: 1
+  m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
@@ -631,34 +637,34 @@ BlendTree:
   m_Name: JumpBlendTree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 97166bb295793f34bac44e750541cf3f, type: 2}
-    m_Threshold: 0.098945744
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 7
-    m_CycleOffset: 0
-    m_DirectBlendParameter: VerticalVelocity
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: aa4a47eff6471cd42a34e5b7369a785f, type: 2}
-    m_Threshold: 0.5512249
+    m_Motion: {fileID: 7400000, guid: 756af91d502183e4f90476cb271b2e11, type: 2}
+    m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 0.01
     m_CycleOffset: 0
     m_DirectBlendParameter: VerticalVelocity
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 756af91d502183e4f90476cb271b2e11, type: 2}
-    m_Threshold: 1.003504
+    m_Motion: {fileID: 7400000, guid: aa4a47eff6471cd42a34e5b7369a785f, type: 2}
+    m_Threshold: 9
     m_Position: {x: 0, y: 0}
-    m_TimeScale: -7
+    m_TimeScale: 0.01
+    m_CycleOffset: 0
+    m_DirectBlendParameter: VerticalVelocity
+    m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: 97166bb295793f34bac44e750541cf3f, type: 2}
+    m_Threshold: 10
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 0.01
     m_CycleOffset: 0
     m_DirectBlendParameter: VerticalVelocity
     m_Mirror: 0
   m_BlendParameter: VerticalVelocity
   m_BlendParameterY: VerticalVelocity
-  m_MinThreshold: 0.098945744
-  m_MaxThreshold: 1.003504
-  m_UseAutomaticThresholds: 1
+  m_MinThreshold: 0
+  m_MaxThreshold: 10
+  m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 0
 --- !u!1101 &6115607669617687131

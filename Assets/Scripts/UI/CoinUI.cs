@@ -1,38 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class CoinUI : MonoBehaviour
 {
-
     [SerializeField] private TextMeshProUGUI coinText;
-    [SerializeField] private CoinManager coinManager;
 
-    private void Awake()
+    private void Start()
     {
-        // Si no lo asignaste por Inspector, lo busca automáticamente
-        if (coinManager == null)
-            coinManager = CoinManager.Instance;
-    }
+        // Actualización inicial
+        UpdateCoins(0);
 
-    private void OnEnable()
-    {
-        if (coinManager != null)
+        // Suscripción segura al Singleton
+        if (CoinManager.Instance != null)
         {
-            coinManager.SubscribeUI(UpdateUI);
-            UpdateUI(coinManager.CoinCount); // Mostrar valor actual
+            CoinManager.Instance.SubscribeUI(UpdateCoins);
+            // Sincronizar valor actual al nacer
+            UpdateCoins(CoinManager.Instance.CoinCount);
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        if (coinManager != null)
-            coinManager.UnsubscribeUI(UpdateUI);
+        // Desuscripción segura
+        if (CoinManager.Instance != null)
+        {
+            CoinManager.Instance.UnsubscribeUI(UpdateCoins);
+        }
     }
-    private void UpdateUI(int coinCount)
+
+    private void UpdateCoins(int amount)
     {
-        if (coinText != null)
-            coinText.text = $"Coins: {coinCount}";
+        if (coinText != null) coinText.text = "Coins: " + amount;
     }
 }

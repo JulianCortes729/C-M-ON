@@ -57,7 +57,6 @@ Este proyecto es una demostración técnica desarrollada individualmente para fi
 
 * **Desarrollo y Programación:** **Julián Cortés**
     * Lógica completa del juego (C#), diseño de niveles, implementación de IA, UI y mecánicas.
-    * *Documento de Diseño:* [Ver PDF incluido](Documento%20de%20Diseño%20(C-M-ON)%20(Julian%20Cortes).pdf)
 
 * **Assets de Terceros:**
     * **Arte y Sonido:** Los modelos 3D, texturas, música y efectos de sonido pertenecen a sus respectivos autores. Se han utilizado y/o modificado únicamente con fines educativos para dar vida a las mecánicas programadas.

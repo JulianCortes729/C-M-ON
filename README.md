@@ -52,6 +52,8 @@ El juego demuestra la implementación de físicas, controladores de personajes y
 | **Saltar / Doble Salto** | Barra Espaciadora |
 | **Dash**                 | C                 |
 | **Disparar**             | Click Izquierdo   |
+| **Sensibilidad**         | TAB               |
+| **Saltar introducción**  | Q                 |
 
 ## 👥 Créditos y Autoría
 

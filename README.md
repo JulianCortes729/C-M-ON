@@ -10,6 +10,8 @@
 ![Talento Tech](https://img.shields.io/badge/Curso-Talento%20Tech-orange)
 ![Status](https://img.shields.io/badge/Status-Demo%20Finalizada-success)
 
+![Vista del proyecto en Unity Editor](Captura%20de%20pantalla%202024-11-02%20193303.png)
+
 ## 📖 Sobre el Proyecto
 
 **C-M-ON** fue desarrollado como la **entrega final** para el curso de **Unity 3D de Talento Tech**.

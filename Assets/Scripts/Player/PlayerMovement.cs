@@ -439,4 +439,9 @@ public class PlayerMovement : MonoBehaviour
             Debug.DrawLine(p1, p2, color);
         }
     }
+
+    public bool IsGrounded()
+    {
+        return isGrounded;
+    }
 }

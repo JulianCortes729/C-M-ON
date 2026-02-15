@@ -27,6 +27,7 @@ public class PlayerFallDamage : MonoBehaviour
     {
         if (deathHandler.isDying) return;
 
+        if(collision.gameObject.CompareTag("Trampoline")) return; // Ignoramos colisiones con trampolines, no deberían causar daño.
 
         //Solo nos importa si el golpe viene principalmente de ABAJO (eje Y).
         //collision.contacts[0].normal es la dirección de la superficie con la que chocamos.

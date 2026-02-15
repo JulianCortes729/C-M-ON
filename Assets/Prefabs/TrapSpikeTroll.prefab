@@ -4620,7 +4620,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7146156977529527554}
   - component: {fileID: 6323920596161195571}
-  - component: {fileID: 5991855251802223729}
   - component: {fileID: 4185163145070070195}
   - component: {fileID: 3890891546207509133}
   - component: {fileID: 590744363961472698}
@@ -4683,27 +4682,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &5991855251802223729
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6460004088509445070}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3, y: 0.15870273, z: 3}
-  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &4185163145070070195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4717,6 +4695,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spikesAnimator: {fileID: 6323920596161195571}
+  timer: 3
+  boxCollider: {fileID: 0}
 --- !u!65 &3890891546207509133
 BoxCollider:
   m_ObjectHideFlags: 0

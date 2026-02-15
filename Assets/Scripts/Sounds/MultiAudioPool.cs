@@ -32,7 +32,7 @@ public class MultiAudioPool : MonoBehaviour
 
     [Header("Pool Settings")]
     [Tooltip("Cantidad de AudioSources preinstanciados.")]
-    [SerializeField] private int poolSize = 10;
+    [SerializeField] private int poolSize;
 
     private void Awake()
     {

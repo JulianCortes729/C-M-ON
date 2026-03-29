@@ -5,16 +5,24 @@ using UnityEngine;
 public class PlayerShoot : MonoBehaviour
 {
    
-    public ObjectPool bulletPool;
-    public Transform shootPoint; // Donde sale la bala
+    public ObjectPoolBullet bulletPool;
+    public Transform shootPoint; 
 
     private Animator anim;
 
+    /// <summary>
+    /// Inicializa referencias necesarias al comenzar la escena.
+    /// Cachea el componente Animator para disparar las animaciones desde la entrada.
+    /// </summary>
     void Start()
     {
         anim = GetComponent<Animator>();
     }
 
+    /// <summary>
+    /// Lee la entrada del jugador cada frame y dispara la animación de ataque
+    /// cuando se pulsa el botón de disparo configurado en Input Manager ("Fire1").
+    /// </summary>
     void Update()
     {
         if (Input.GetButtonDown("Fire1"))
@@ -23,10 +31,14 @@ public class PlayerShoot : MonoBehaviour
         }
     }
 
-    // Este lo llama la animación
+    /// <summary>
+    /// Método invocado (por la animación) para instanciar/obtener una bala
+    /// desde el pool en el punto de disparo especificado y con la rotación
+    /// del transform de disparo.
+    /// </summary>
     public void Shoot()
     {
-        GameObject bullet = bulletPool.GetObjectAt(shootPoint.position,shootPoint.rotation);
+        Bullet bullet = bulletPool.GetObjectAt(shootPoint.position, shootPoint.rotation);
     }
 
 

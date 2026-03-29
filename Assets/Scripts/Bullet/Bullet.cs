@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Bullet : MonoBehaviour
 {
@@ -12,21 +13,32 @@ public class Bullet : MonoBehaviour
     private float timer;
     private TrailRenderer trail;
 
+    private IObjectPool<Bullet> pool;
+
     private void Awake()
     {
         trail = GetComponent<TrailRenderer>();
     }
 
+    /// <summary>
+    /// Inicialización temprana del componente; se cachea el TrailRenderer si existe.
+    /// </summary>
+
     void OnEnable()
     {
         timer = 0f;
-        // Reiniciar trail para el Pooling
+        
         if (trail)
         {
             trail.Clear();
             trail.emitting = true;
         }
     }
+
+    /// <summary>
+    /// Se ejecuta cuando la bala se activa: reinicia el temporizador de vida y
+    /// reactiva el rastro visual si existe.
+    /// </summary>
 
     void OnDisable()
     {
@@ -37,37 +49,46 @@ public class Bullet : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Se ejecuta cuando la bala se desactiva: detiene y limpia el rastro visual.
+    /// </summary>
+
     void Update()
     {
-        // Mover hacia adelante
+        
         transform.position += transform.forward * speed * Time.deltaTime;
 
-        // Lógica de vida útil
+        
         timer += Time.deltaTime;
         if (timer >= lifeTime)
             Deactivate();
     }
 
-    // Usamos Trigger para que la bala atraviese y no empuje físicas
+    /// <summary>
+    /// Movimiento sencillo de la bala y control de su tiempo de vida.
+    /// Cuando expira el tiempo, la bala se devuelve al pool.
+    /// </summary>
+
+    
     void OnTriggerEnter(Collider other)
     {
-        // 1. Si golpea al OBJETIVO (Player o Enemigo según configures)
+        
         if (other.CompareTag(targetTag))
         {
-            // Si el objetivo es el Player, ejecutamos su muerte
+            
             if (targetTag == "Player")
             {
                 other.GetComponentInParent<PlayerDeathHandler>()?.Die();
             }
 
-            // 2. SI LE PEGAMOS AL ENEMIGO (JEFE)
+            
             else if (targetTag == "Boss")
             {
-                // Buscamos el script de vida en el objeto o sus padres
+                
                 BossHealth bossHealth = other.GetComponentInParent<BossHealth>();
                 if (bossHealth != null)
                 {
-                    bossHealth.TakeDamage(3); // <--- DAÑO QUE HACE LA BALA
+                    bossHealth.TakeDamage(3);
                 }
             }
 
@@ -75,8 +96,19 @@ public class Bullet : MonoBehaviour
         }
         
     }
-    void Deactivate()
+
+    /// <summary>
+    /// Handle de colisiones: si la bala impacta al target correcto, aplica el efecto
+    /// (daño o muerte) y se devuelve al pool.
+    /// </summary>
+
+    public void AssignPool(IObjectPool<Bullet> objectPool)
     {
-        gameObject.SetActive(false);
+        pool = objectPool;
+    } 
+
+    public void Deactivate()
+    {
+        pool.Release(this);
     }
 }

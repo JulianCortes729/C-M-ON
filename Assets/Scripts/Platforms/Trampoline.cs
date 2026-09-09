@@ -13,10 +13,10 @@ public class Trampoline : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Rigidbody rb = collision.rigidbody;
-            if (rb != null && rb.velocity.y <= 0) // Solo si venía cayendo
+            if (rb != null && rb.linearVelocity.y <= 0) // Solo si venía cayendo
             {
                 // Resetea la velocidad vertical y aplica el impulso
-                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
                 rb.AddForce(Vector3.up * bounceForce, ForceMode.Impulse);
             }
         }

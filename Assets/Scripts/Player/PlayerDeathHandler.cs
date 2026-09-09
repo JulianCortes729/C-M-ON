@@ -54,7 +54,7 @@ public class PlayerDeathHandler : MonoBehaviour
 
         // Desactivar movimiento y físicas
         movement.enabled = false;
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
 
@@ -96,7 +96,7 @@ public class PlayerDeathHandler : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = false;
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
 

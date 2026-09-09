@@ -568,7 +568,7 @@ public class SpiderIANavMesh : MonoBehaviour
         }
 
         // 3. El jugador está cayendo (velocidad vertical negativa).
-        bool falling = playerRb.velocity.y < -minImpactSpeed ||
+        bool falling = playerRb.linearVelocity.y < -minImpactSpeed ||
                       collision.relativeVelocity.y < -minImpactSpeed;
 
         return centerAbove && contactAbove && falling;

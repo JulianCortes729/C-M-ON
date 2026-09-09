@@ -134,7 +134,7 @@ public class PlayerMovement : MonoBehaviour
         HandleMovement();
         ApplyBetterJumpPhysics();
 
-        smoothVerticalVelocity =Mathf.Lerp(smoothVerticalVelocity, rb.velocity.y, 0.2f);
+        smoothVerticalVelocity =Mathf.Lerp(smoothVerticalVelocity, rb.linearVelocity.y, 0.2f);
         anim.SetFloat("VerticalVelocity", smoothVerticalVelocity);
 
         if (!wasGrounded && isGrounded)
@@ -143,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
             canDash = true;
         }
 
-        if (rb.velocity.y < 0f)
+        if (rb.linearVelocity.y < 0f)
         {
             if (leftTrail != null) leftTrail.emitting = false;
             if (rightTrail != null) rightTrail.emitting = false;
@@ -177,19 +177,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyBetterJumpPhysics()
     {
-        if (rb.velocity.y < 0)
+        if (rb.linearVelocity.y < 0)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.velocity.y > 0)
+        else if (rb.linearVelocity.y > 0)
         {
             if (jumpCount == 2 && !Input.GetButton("Jump"))
             {
-                rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
             }
             else if (jumpCount == 1)
             {
-                rb.velocity += Vector3.up * Physics.gravity.y * (gravityMultiplier - 1) * Time.fixedDeltaTime;
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (gravityMultiplier - 1) * Time.fixedDeltaTime;
             }
         }
     }
@@ -220,10 +220,10 @@ public class PlayerMovement : MonoBehaviour
 
         // Mantener componente vertical
         Vector3 newVel = horizontalVel;
-        newVel.y = rb.velocity.y;
+        newVel.y = rb.linearVelocity.y;
 
         // Aplicar al Rigidbody
-        rb.velocity = newVel;
+        rb.linearVelocity = newVel;
 
         // Rotación suave hacia el movimiento
         if (moveDir.sqrMagnitude > 0.01f)
@@ -240,12 +240,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (jumpCount == 1)
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         else if (jumpCount == 2)
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jetpackForce, ForceMode.Impulse);
 
             if (leftTrail != null)
@@ -318,7 +318,7 @@ public class PlayerMovement : MonoBehaviour
         dashDir.y = 0f;
         dashDir.Normalize();
 
-        rb.velocity = dashDir * dashForce;
+        rb.linearVelocity = dashDir * dashForce;
 
         if (MultiParticlePool.Instance != null && !string.IsNullOrEmpty(dashTrailKey))
         {

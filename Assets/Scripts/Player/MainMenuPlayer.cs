@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -12,7 +12,7 @@ public class MainMenuPlayer : MonoBehaviour
     [SerializeField] private float delayBeforeSceneLoad = 1.0f;
 
     [Header("References (Igual que en PlayerMovement)")]
-    [SerializeField] private GameObject handTrailPrefab; // Arrastra aquí tu prefab de trail
+    [SerializeField] private GameObject handTrailPrefab; // Arrastra aquÃ­ tu prefab de trail
     [SerializeField] private Transform leftHand;         // Arrastra el hueso de la mano izquierda
     [SerializeField] private Transform rightHand;        // Arrastra el hueso de la mano derecha
 
@@ -28,7 +28,7 @@ public class MainMenuPlayer : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
 
-        // 1. Configuración inicial del personaje
+        // 1. ConfiguraciÃ³n inicial del personaje
         anim.SetBool("IsRunning", false);
         anim.SetBool("IsGrounded", true);
 

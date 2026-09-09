@@ -1,10 +1,10 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerFallDamage : MonoBehaviour
 {
-    [Header("Configuración de Caída")]
+    [Header("ConfiguraciÃ³n de CaÃ­da")]
     [SerializeField] private float lethalImpactVelocity = 18f;
 
     [Header("Debug")]
@@ -21,23 +21,23 @@ public class PlayerFallDamage : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody>();
     }
 
-    //el metodo se activa al momento de una colisión.
-    //más eficiente que chequear "isGrounded" todo el tiempo para daño.
+    //el metodo se activa al momento de una colisiÃ³n.
+    //mÃ¡s eficiente que chequear "isGrounded" todo el tiempo para daÃ±o.
     private void OnCollisionEnter(Collision collision)
     {
         if (deathHandler.isDying) return;
 
-        if(collision.gameObject.CompareTag("Trampoline")) return; // Ignoramos colisiones con trampolines, no deberían causar daño.
+        if(collision.gameObject.CompareTag("Trampoline")) return; // Ignoramos colisiones con trampolines, no deberÃ­an causar daÃ±o.
 
         //Solo nos importa si el golpe viene principalmente de ABAJO (eje Y).
-        //collision.contacts[0].normal es la dirección de la superficie con la que chocamos.
+        //collision.contacts[0].normal es la direcciÃ³n de la superficie con la que chocamos.
         //Si la normal apunta hacia arriba (aprox 1), es suelo.
         if (collision.contactCount > 0 && collision.contacts[0].normal.y < 0.5f)
         {
-            return; //Chocamos contra una pared o techo, no es caída.
+            return; //Chocamos contra una pared o techo, no es caÃ­da.
         }
 
-        // se calcula automáticamente con qué fuerza chocaron los dos objetos.
+        // se calcula automÃ¡ticamente con quÃ© fuerza chocaron los dos objetos.
         // No necesitamos guardar "previousVelocity" manualmente.
         float impactForce = collision.relativeVelocity.magnitude;
 
@@ -54,7 +54,7 @@ public class PlayerFallDamage : MonoBehaviour
         }
         else if (showDebugLogs && impactForce > 5f)
         {
-            // Log informativo para ayudarte a calibrar el número lethalImpactVelocity
+            // Log informativo para ayudarte a calibrar el nÃºmero lethalImpactVelocity
             Debug.Log($"[PlayerFallDamage] Aterrizaje seguro. Fuerza: {impactForce}");
         }
     }

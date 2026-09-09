@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public class DamagePlatform : MonoBehaviour
         FromAbove    // Solo quita vida si el jugador cae desde arriba
     }
 
-    [Header("Configuración")]
+    [Header("ConfiguraciÃ³n")]
     //[SerializeField] private int damage = 1;
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private bool useTrigger = false;
@@ -27,7 +27,7 @@ public class DamagePlatform : MonoBehaviour
     {
         if (!player.CompareTag(playerTag)) return;
 
-        // Si el modo es "FromAbove", solo daña si el player viene de arriba
+        // Si el modo es "FromAbove", solo daÃ±a si el player viene de arriba
         if (damageMode == DamageMode.FromAbove && contactNormal.y > -0.5f) return;
 
         SimplePlayerRespawn respawn = player.GetComponent<SimplePlayerRespawn>();
@@ -42,7 +42,7 @@ public class DamagePlatform : MonoBehaviour
         if (useTrigger) return;
         if (!collision.gameObject.CompareTag(playerTag)) return;
 
-        // Tomamos la normal promedio del contacto (dirección de la colisión)
+        // Tomamos la normal promedio del contacto (direcciÃ³n de la colisiÃ³n)
         Vector3 avgNormal = Vector3.zero;
         foreach (var contact in collision.contacts)
             avgNormal += contact.normal;
@@ -54,6 +54,6 @@ public class DamagePlatform : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!useTrigger) return;
-        ApplyDamageTo(other.gameObject, Vector3.down); // En triggers no hay normal, simulamos caída
+        ApplyDamageTo(other.gameObject, Vector3.down); // En triggers no hay normal, simulamos caÃ­da
     }
 }

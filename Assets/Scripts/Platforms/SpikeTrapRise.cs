@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,7 +15,7 @@ public class SpikeTrapRise : MonoBehaviour
 
     
 
-    [Header("Referencias Visuales y F�sicas")]
+    [Header("Referencias Visuales y Físicas")]
     [SerializeField] private BoxCollider damageCollider;
     [SerializeField] private Animator spikesAnimator;
 

@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Controla la escena "To be continued" que aparece tras derrotar al jefe.
-/// Muestra un botón para reiniciar el juego (volver al menú principal) y resetea managers.
+/// Muestra un botÃ³n para reiniciar el juego (volver al menÃº principal) y resetea managers.
 /// </summary>
 public class ContinueSceneManager : MonoBehaviour
 {
@@ -26,10 +26,10 @@ public class ContinueSceneManager : MonoBehaviour
         if (LifeManager.Instance != null) LifeManager.Instance.ResetLives();
         if (CoinManager.Instance != null) CoinManager.Instance.ResetCoins();
 
-        // Esto borra la memoria del último checkpoint guardado
+        // Esto borra la memoria del Ãºltimo checkpoint guardado
         if (CheckpointManager.Instance != null) CheckpointManager.Instance.ClearCheckpoints();
 
-        // Usar SceneLoader si está disponible para manejar transiciones/fade
+        // Usar SceneLoader si estÃ¡ disponible para manejar transiciones/fade
         if (SceneLoader.Instance != null)
         {
             SceneLoader.Instance.LoadScene(GameScenes.MainMenu);

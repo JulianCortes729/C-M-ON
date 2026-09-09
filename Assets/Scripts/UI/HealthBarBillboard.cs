@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class HealthBarBillboard : MonoBehaviour
 {
@@ -6,14 +6,14 @@ public class HealthBarBillboard : MonoBehaviour
 
     void Start()
     {
-        // Si no asignas c·mara manual, busca la principal autom·ticamente
+        // Si no asignas c√°mara manual, busca la principal autom√°ticamente
         if (cam == null) cam = Camera.main.transform;
     }
 
-    // LateUpdate ocurre despuÈs de que el jefe se haya movido/rotado
+    // LateUpdate ocurre despu√©s de que el jefe se haya movido/rotado
     void LateUpdate()
     {
-        // Hacemos que la barra mire en la misma direcciÛn que la c·mara
+        // Hacemos que la barra mire en la misma direcci√≥n que la c√°mara
         transform.LookAt(transform.position + cam.forward);
     }
 }

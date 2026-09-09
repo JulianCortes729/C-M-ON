@@ -1,10 +1,10 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BreakablePlatform : MonoBehaviour
 {
-    [Header("Configuración")]
+    [Header("ConfiguraciÃ³n")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private float explosionForce = 5f;
     [SerializeField] private float destroyDelay = 3f;
@@ -26,7 +26,7 @@ public class BreakablePlatform : MonoBehaviour
         Transform fullPlatform = transform.GetChild(0);
         Destroy(fullPlatform.gameObject);
 
-        // Activar física de los fragmentos
+        // Activar fÃ­sica de los fragmentos
         for (int i = 1; i < transform.childCount; i++)
         {
             Rigidbody rb = transform.GetChild(i).GetComponent<Rigidbody>();
@@ -34,7 +34,7 @@ public class BreakablePlatform : MonoBehaviour
             {
                 rb.isKinematic = false;
 
-                // Fuerza aleatoria sutil para dispersión sin empujar al jugador
+                // Fuerza aleatoria sutil para dispersiÃ³n sin empujar al jugador
                 Vector3 randomDir = Random.insideUnitSphere * 0.5f;
                 rb.AddForce(randomDir * explosionForce);
             }

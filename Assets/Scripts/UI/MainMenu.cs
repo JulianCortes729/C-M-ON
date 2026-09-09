@@ -1,8 +1,8 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-// No necesitamos SceneManager aquÌ, lo manejar· el Player/Fader
+// No necesitamos SceneManager aqu√≠, lo manejar√° el Player/Fader
 
 public class MainMenu : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private string introScene = "Intro";
 
     [Header("References")]
-    [SerializeField] private MainMenuPlayer menuPlayer; // <-- ARRASTRA TU PLAYER DEL MEN⁄ AQUÕ
+    [SerializeField] private MainMenuPlayer menuPlayer; // <-- ARRASTRA TU PLAYER DEL MEN√ö AQU√ç
 
     [Header("Panels")]
     [SerializeField] private GameObject mainMenuPanel;
@@ -23,7 +23,7 @@ public class MainMenu : MonoBehaviour
     {
         ShowMainMenu();
 
-        // B˙squeda autom·tica por seguridad si se te olvida arrastrarlo
+        // B√∫squeda autom√°tica por seguridad si se te olvida arrastrarlo
         if (menuPlayer == null)
             menuPlayer = FindObjectOfType<MainMenuPlayer>();
     }
@@ -50,12 +50,12 @@ public class MainMenu : MonoBehaviour
     {
         if (menuPlayer != null)
         {
-            // Delegamos la acciÛn al player para que haga la animaciÛn
+            // Delegamos la acci√≥n al player para que haga la animaci√≥n
             menuPlayer.PlayStartSequence(introScene);
         }
         else
         {
-            Debug.LogWarning("No se asignÛ MainMenuPlayer, cargando directo.");
+            Debug.LogWarning("No se asign√≥ MainMenuPlayer, cargando directo.");
             // Fallback usando tu SceneFader directamente si no hay player
             SceneFader.Instance.FadeToScene(introScene);
         }
@@ -72,13 +72,13 @@ public class MainMenu : MonoBehaviour
         // 2. Si estamos en WebGL (Navegador / Unity Play)
 #elif UNITY_WEBGL
         // En web no se puede cerrar la ventana, pero podemos redirigir.
-        // Puedes poner aquÌ tu perfil de Unity Play, itch.io, o Google.
-        // Ojo: Si est·s en un iframe (como itch.io), a veces bloquean esto tambiÈn.
+        // Puedes poner aqu√≠ tu perfil de Unity Play, itch.io, o Google.
+        // Ojo: Si est√°s en un iframe (como itch.io), a veces bloquean esto tambi√©n.
         
         AbrirEnMismaPestana("https://play.unity.com/en/user/553cb41c-e608-457d-adad-00e00adbaf48"); 
         
         // OPCIONAL: Si prefieres no irte, puedes mostrar un texto de "Gracias por jugar"
-        // y desactivar el panel del men˙.
+        // y desactivar el panel del men√∫.
         
         // 3. Si es un juego de PC/Consola (Build normal)
 #else

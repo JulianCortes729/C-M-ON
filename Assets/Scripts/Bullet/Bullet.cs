@@ -1,13 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.Pool;
 
 public class Bullet : MonoBehaviour
 {
-    [Header("Configuración de Bala")]
+    [Header("ConfiguraciÃ³n de Bala")]
     public float speed = 20f;
     public float lifeTime = 2f;
 
-    [Tooltip("Escribe aquí el Tag de a quién debe matar esta bala (ej: 'Player' o 'Enemy')")]
+    [Tooltip("Escribe aquÃ­ el Tag de a quiÃ©n debe matar esta bala (ej: 'Player' o 'Enemy')")]
     public string targetTag = "Player";
 
     private float timer;
@@ -21,7 +21,7 @@ public class Bullet : MonoBehaviour
     }
 
     /// <summary>
-    /// Inicialización temprana del componente; se cachea el TrailRenderer si existe.
+    /// InicializaciÃ³n temprana del componente; se cachea el TrailRenderer si existe.
     /// </summary>
 
     void OnEnable()
@@ -99,7 +99,7 @@ public class Bullet : MonoBehaviour
 
     /// <summary>
     /// Handle de colisiones: si la bala impacta al target correcto, aplica el efecto
-    /// (daño o muerte) y se devuelve al pool.
+    /// (daÃ±o o muerte) y se devuelve al pool.
     /// </summary>
 
     public void AssignPool(IObjectPool<Bullet> objectPool)

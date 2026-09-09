@@ -1,4 +1,4 @@
-using System.Collections;
+锘縰sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,8 +20,8 @@ public class PlayerShoot : MonoBehaviour
     }
 
     /// <summary>
-    /// Lee la entrada del jugador cada frame y dispara la animaci髇 de ataque
-    /// cuando se pulsa el bot髇 de disparo configurado en Input Manager ("Fire1").
+    /// Lee la entrada del jugador cada frame y dispara la animaci贸n de ataque
+    /// cuando se pulsa el bot贸n de disparo configurado en Input Manager ("Fire1").
     /// </summary>
     void Update()
     {
@@ -32,8 +32,8 @@ public class PlayerShoot : MonoBehaviour
     }
 
     /// <summary>
-    /// M閠odo invocado (por la animaci髇) para instanciar/obtener una bala
-    /// desde el pool en el punto de disparo especificado y con la rotaci髇
+    /// M茅todo invocado (por la animaci贸n) para instanciar/obtener una bala
+    /// desde el pool en el punto de disparo especificado y con la rotaci贸n
     /// del transform de disparo.
     /// </summary>
     public void Shoot()

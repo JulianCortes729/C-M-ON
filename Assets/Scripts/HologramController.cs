@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,11 +6,11 @@ public class HologramController : MonoBehaviour
 {
 
     [Header("Referencia al holograma")]
-    public GameObject holograma; // arrastrar aquí el GameObject del holograma
+    public GameObject holograma; // arrastrar aquÃ­ el GameObject del holograma
 
     private void Start()
     {
-        // Asegurarse de que el holograma esté activo al inicio
+        // Asegurarse de que el holograma estÃ© activo al inicio
         if (holograma != null)
             holograma.SetActive(true);
     }

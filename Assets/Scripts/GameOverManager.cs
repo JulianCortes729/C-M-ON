@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class GameOverManager : MonoBehaviour
@@ -12,8 +12,8 @@ public class GameOverManager : MonoBehaviour
 
     private void Start()
     {
-        // BINDING POR CÓDIGO:
-        // Le decimos al botón qué hacer usando C#. Esto es mucho más estable.
+        // BINDING POR CÃ“DIGO:
+        // Le decimos al botÃ³n quÃ© hacer usando C#. Esto es mucho mÃ¡s estable.
 
         if (restartButton != null)
         {
@@ -29,7 +29,7 @@ public class GameOverManager : MonoBehaviour
     // Funciones "Wrapper" para llamar a los Singletons
     private void HandleRestart()
     {
-        // 1. Resetear lógica
+        // 1. Resetear lÃ³gica
         ResetGameState();
 
         // 2. Usar el Singleton directamente
@@ -39,7 +39,7 @@ public class GameOverManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("SceneLoader Instance no encontrada. Asegúrate de iniciar el juego desde el MainMenu o que exista el GameManager.");
+            Debug.LogError("SceneLoader Instance no encontrada. AsegÃºrate de iniciar el juego desde el MainMenu o que exista el GameManager.");
             // Fallback de emergencia
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
         }

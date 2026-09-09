@@ -1,11 +1,11 @@
-using Cinemachine;
+Ôªøusing Cinemachine;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Gestiona el bloqueo del cursor, la sensibilidad y el estado del men˙.
-/// Act˙a como la "Fuente de la Verdad" para la UI.
+/// Gestiona el bloqueo del cursor, la sensibilidad y el estado del men√∫.
+/// Act√∫a como la "Fuente de la Verdad" para la UI.
 /// </summary>
 public class CursorController : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private float defaultHorizontalSpeed = 2f;
     [SerializeField] private float defaultVerticalSpeed = 0.5f;
 
-    // EVENTO: La UI se suscribir· a esto para saber cu·ndo abrirse/cerrarse
+    // EVENTO: La UI se suscribir√° a esto para saber cu√°ndo abrirse/cerrarse
     public event Action<bool> OnMenuStateChanged;
 
     #endregion
@@ -72,7 +72,7 @@ public class CursorController : MonoBehaviour
 
     private void Update()
     {
-        // Si estamos en GameOver o Men˙ Principal, no procesamos inputs de bloqueo/desbloqueo
+        // Si estamos en GameOver o Men√∫ Principal, no procesamos inputs de bloqueo/desbloqueo
         if (isPaused) return;
 
         HandleInput();
@@ -92,19 +92,19 @@ public class CursorController : MonoBehaviour
     private void CheckScene()
     {
         string currentScene = SceneManager.GetActiveScene().name;
-        // IMPORTANTE: Aseg˙rate de que "Level1" es el nombre exacto de tu escena
+        // IMPORTANTE: Aseg√∫rate de que "Level1" es el nombre exacto de tu escena
         bool isGameplayScene = currentScene.Contains("Level1");
 
         if (!isGameplayScene)
         {
-            // --- MODO MEN⁄ (GameOver, MainMenu, etc) ---
+            // --- MODO MEN√ö (GameOver, MainMenu, etc) ---
             isPaused = true; // Esto detiene el Update() para que los clics no re-bloqueen el cursor
 
-            // 1. LÛgicamente cerramos el men˙ de sensibilidad (sin efectos secundarios de cursor)
+            // 1. L√≥gicamente cerramos el men√∫ de sensibilidad (sin efectos secundarios de cursor)
             isSettingsOpen = false;
             OnMenuStateChanged?.Invoke(false); // Avisamos a la UI para que se oculte si estaba abierta
 
-            // 2. FÕSICAMENTE desbloqueamos el cursor para poder usar botones
+            // 2. F√çSICAMENTE desbloqueamos el cursor para poder usar botones
             UnlockCursor();
         }
         else
@@ -113,7 +113,7 @@ public class CursorController : MonoBehaviour
             isPaused = false;
 
             // Al entrar al nivel, usamos SetMenuState(false) 
-            // Esto cierra el men˙ Y bloquea el cursor autom·ticamente para jugar
+            // Esto cierra el men√∫ Y bloquea el cursor autom√°ticamente para jugar
             SetMenuState(false);
 
             FindCameraIfNeeded();
@@ -158,7 +158,7 @@ public class CursorController : MonoBehaviour
     }
 
     /// <summary>
-    /// MÈtodo centralizado que cambia el estado y avisa a todos los suscriptores.
+    /// M√©todo centralizado que cambia el estado y avisa a todos los suscriptores.
     /// </summary>
     private void SetMenuState(bool isOpen)
     {

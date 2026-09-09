@@ -1,12 +1,12 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 public class BossJumpAttack : MonoBehaviour
 {
-    [Header("Configuración del Salto")]
-    public Transform playerTarget;      // Arrastra aquí al Player
+    [Header("ConfiguraciÃ³n del Salto")]
+    public Transform playerTarget;      // Arrastra aquÃ­ al Player
     public float jumpHeight = 5f;       // Altura del arco del salto
-    public float jumpDuration = 0.8f;     // Cuánto tarda en llegar al jugador
+    public float jumpDuration = 0.8f;     // CuÃ¡nto tarda en llegar al jugador
     public float waitOnGround = 1f;     // Tiempo que espera antes de volver
 
     [Header("Animaciones")]
@@ -14,11 +14,11 @@ public class BossJumpAttack : MonoBehaviour
     public string jumpTriggerName = "Jump"; // Nombre del trigger en tu Animator
 
     private Vector3 originalPosition;
-    private bool isAttacking = false;   // Para saber si está en medio del ataque
-    private bool isFalling = false;     // Para saber si está cayendo (momento letal)
+    private bool isAttacking = false;   // Para saber si estÃ¡ en medio del ataque
+    private bool isFalling = false;     // Para saber si estÃ¡ cayendo (momento letal)
 
-    [Header("Tiempos de Animación")]
-    public float jumpWindUpTime = 0.1f; // Tiempo que tarda la animación en "despegar" (agacharse)
+    [Header("Tiempos de AnimaciÃ³n")]
+    public float jumpWindUpTime = 0.1f; // Tiempo que tarda la animaciÃ³n en "despegar" (agacharse)
     public float landRecoveryTime = 0.25f; // Tiempo que se queda en pose de "aterrizaje"
 
     // Agrega esta variable para referencia
@@ -31,7 +31,7 @@ public class BossJumpAttack : MonoBehaviour
         originalPosition = transform.position; // Guardamos donde "vive" el jefe
     }
 
-    // Llama a esta función para iniciar el ataque (desde tu script de IA o un botón de prueba)
+    // Llama a esta funciÃ³n para iniciar el ataque (desde tu script de IA o un botÃ³n de prueba)
     public void TriggerAttack()
     {
         if (!isAttacking)
@@ -44,7 +44,7 @@ public class BossJumpAttack : MonoBehaviour
     {
         isAttacking = true;
 
-        // --- CORRECCIÓN DE ANIMACIÓN ---
+        // --- CORRECCIÃ“N DE ANIMACIÃ“N ---
         // 1. Forzamos a que la variable de apuntar sea FALSA
         if (animator) animator.SetBool(aimBoolName, false);
         // 2. (Opcional pero recomendado) Detenemos el script de disparo si estaba corriendo
@@ -56,33 +56,33 @@ public class BossJumpAttack : MonoBehaviour
         originalPosition = transform.position;
         Vector3 targetPosition = playerTarget.position;
 
-        // --- FASE 1: ANTICIPACIÓN ---
-        // Disparamos la animación
+        // --- FASE 1: ANTICIPACIÃ“N ---
+        // Disparamos la animaciÃ³n
         if (animator) animator.SetTrigger(jumpTriggerName);
 
-        // IMPORTANTE: Esperamos aquí lo que tarda la animación en hacer el gesto de "tomar impulso"
-        // El jefe NO se mueve todavía, solo se anima.
+        // IMPORTANTE: Esperamos aquÃ­ lo que tarda la animaciÃ³n en hacer el gesto de "tomar impulso"
+        // El jefe NO se mueve todavÃ­a, solo se anima.
         yield return new WaitForSeconds(jumpWindUpTime);
 
-        // Preparamos físicas
+        // Preparamos fÃ­sicas
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb) rb.isKinematic = true;
 
         // --- FASE 2: EL SALTO (VUELO) ---
-        // Ahora sí empezamos a moverlo. Ajusta 'jumpDuration' para que coincida con la parte de "aire" de tu animación
+        // Ahora sÃ­ empezamos a moverlo. Ajusta 'jumpDuration' para que coincida con la parte de "aire" de tu animaciÃ³n
         yield return StartCoroutine(MoveParabola(transform.position, targetPosition, jumpDuration));
 
         // --- FASE 3: ATERRIZAJE E IMPACTO ---
         isFalling = false;
 
-        // Aquí podrías disparar un Trigger de "Land" si tienes animación de impacto específica
+        // AquÃ­ podrÃ­as disparar un Trigger de "Land" si tienes animaciÃ³n de impacto especÃ­fica
         // if(animator) animator.SetTrigger("Land"); 
 
-        // Esperamos un momento en el suelo (Recuperación del impacto)
+        // Esperamos un momento en el suelo (RecuperaciÃ³n del impacto)
         yield return new WaitForSeconds(waitOnGround);
 
         // --- FASE 4: SALTO DE VUELTA ---
-        // Opcional: ¿Quieres anticipación para el salto de vuelta también?
+        // Opcional: Â¿Quieres anticipaciÃ³n para el salto de vuelta tambiÃ©n?
         if (animator) animator.SetTrigger(jumpTriggerName);
         yield return new WaitForSeconds(jumpWindUpTime); // Usamos el mismo tiempo de impulso
 
@@ -92,7 +92,7 @@ public class BossJumpAttack : MonoBehaviour
         isAttacking = false;
     }
 
-    // Esta función matemática crea el arco perfecto
+    // Esta funciÃ³n matemÃ¡tica crea el arco perfecto
     IEnumerator MoveParabola(Vector3 start, Vector3 end, float duration)
     {
         float time = 0;
@@ -101,22 +101,22 @@ public class BossJumpAttack : MonoBehaviour
         {
             time += Time.deltaTime / duration;
 
-            // Interpolación lineal para moverse de A a B
+            // InterpolaciÃ³n lineal para moverse de A a B
             //Vector3 linearPos = Vector3.Lerp(start, end, time);
 
             // Usa Lerp con "Ease In" para que empiece lento y acelere al caer:
-            float acceleratedTime = time * time; // Cuadrático
+            float acceleratedTime = time * time; // CuadrÃ¡tico
             Vector3 linearPos = Vector3.Lerp(start, end, time); // Mantenemos movimiento lineal en X/Z
                                                                 // Solo la altura cambia su velocidad visual
 
 
-            // Añadimos altura usando una curva Seno (Sube y baja suavemente)
-            // Si time es 0.5 (mitad del salto), Sin(PI * 0.5) es 1 (altura máxima)
+            // AÃ±adimos altura usando una curva Seno (Sube y baja suavemente)
+            // Si time es 0.5 (mitad del salto), Sin(PI * 0.5) es 1 (altura mÃ¡xima)
             float heightCurve = Mathf.Sin(time * Mathf.PI) * jumpHeight;
 
             transform.position = new Vector3(linearPos.x, linearPos.y + heightCurve, linearPos.z);
 
-            // Detectamos si estamos en la segunda mitad del salto (cayendo) para activar el daño
+            // Detectamos si estamos en la segunda mitad del salto (cayendo) para activar el daÃ±o
             if (time > 0.5f) isFalling = true;
             else isFalling = false;
 
@@ -124,17 +124,17 @@ public class BossJumpAttack : MonoBehaviour
         }
     }
 
-    // LÓGICA DE COLISIÓN PARA MATAR AL PLAYER
+    // LÃ“GICA DE COLISIÃ“N PARA MATAR AL PLAYER
     private void OnCollisionEnter(Collision collision)
     {
         // Solo matamos si estamos atacando, cayendo (fase final del salto) y tocamos al player
         if (isAttacking && isFalling && collision.gameObject.CompareTag("Player"))
         {
-            // TU CÓDIGO DE MUERTE
+            // TU CÃ“DIGO DE MUERTE
             collision.gameObject.GetComponent<PlayerDeathHandler>()?.Die();
 
             // Opcional: Detener el ataque o rebotar si mata al jugador
-            Debug.Log("¡Jugador Aplastado!");
+            Debug.Log("Â¡Jugador Aplastado!");
         }
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,7 +47,7 @@ public class LightningController : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(0.03f, 0.08f));
         lightningLight.intensity = 0f;
 
-        // Peque�o parpadeo extra
+        // Pequeño parpadeo extra
         yield return new WaitForSeconds(Random.Range(0.02f, 0.06f));
         lightningLight.intensity = maxIntensity * Random.Range(0.4f, 0.8f);
         yield return new WaitForSeconds(Random.Range(0.04f, 0.1f));

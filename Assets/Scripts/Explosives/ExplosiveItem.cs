@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class ExplosiveItem : MonoBehaviour
 {
@@ -69,7 +69,7 @@ public class ExplosiveItem : MonoBehaviour
         }
     }
 
-    // Este mÈtodo ser· llamado por el trigger hijo (ver m·s abajo)
+    // Este m√©todo ser√° llamado por el trigger hijo (ver m√°s abajo)
     public void OnSpiderRangeEntered()
     {
         if (!isExplosive)

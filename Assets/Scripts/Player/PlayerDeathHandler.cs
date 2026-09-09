@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +19,7 @@ public class PlayerDeathHandler : MonoBehaviour
     private Vector3 deathPosition;
     private bool deathPositionSaved = false;
 
-    [Header("Configuración")]
+    [Header("ConfiguraciÃ³n")]
     [SerializeField] private float deathAnimationDuration = 1.2f;
     [SerializeField] private float fadeStartDelay = 0.6f;
 
@@ -38,7 +38,7 @@ public class PlayerDeathHandler : MonoBehaviour
     {
         if (isDying)
         {
-            Debug.Log($"{LogTime()} PlayerDeathHandler: Die() ignorado porque ya está muriendo");
+            Debug.Log($"{LogTime()} PlayerDeathHandler: Die() ignorado porque ya estÃ¡ muriendo");
             return;
         }
 
@@ -48,23 +48,23 @@ public class PlayerDeathHandler : MonoBehaviour
         deathPosition = transform.position;
         deathPositionSaved = true;
 
-        // NUEVO: Desactivar collider para evitar más colisiones
+        // NUEVO: Desactivar collider para evitar mÃ¡s colisiones
         if (playerCollider != null)
             playerCollider.enabled = false;
 
-        // Desactivar movimiento y físicas
+        // Desactivar movimiento y fÃ­sicas
         movement.enabled = false;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
 
-        // Activar animación de muerte
+        // Activar animaciÃ³n de muerte
         animator.SetTrigger("Die");
         animator.SetBool("IsRunning", false);
         animator.SetBool("IsJumping", false);
         animator.SetBool("IsDashing", false);
 
-        Debug.Log($"{LogTime()} PlayerDeathHandler: Die() -> Posición de muerte guardada: {deathPosition}");
+        Debug.Log($"{LogTime()} PlayerDeathHandler: Die() -> PosiciÃ³n de muerte guardada: {deathPosition}");
 
         deathCoroutine = StartCoroutine(DeathSequence());
     }
@@ -103,7 +103,7 @@ public class PlayerDeathHandler : MonoBehaviour
         if (movement != null)
             movement.enabled = true;
 
-        Debug.Log($"{LogTime()} PlayerDeathHandler: ResetAfterRespawn ejecutado — coroutine cancelada y flags reseteados");
+        Debug.Log($"{LogTime()} PlayerDeathHandler: ResetAfterRespawn ejecutado â€” coroutine cancelada y flags reseteados");
 
         animator.ResetTrigger("Die");
         animator.SetBool("IsRunning", false);
@@ -119,7 +119,7 @@ public class PlayerDeathHandler : MonoBehaviour
 
         yield return new WaitForSeconds(fadeStartDelay);
 
-        Debug.Log($"{LogTime()} PlayerDeathHandler: mitad de animación — fadeStartDelay alcanzado");
+        Debug.Log($"{LogTime()} PlayerDeathHandler: mitad de animaciÃ³n â€” fadeStartDelay alcanzado");
 
         yield return new WaitForSeconds(deathAnimationDuration - fadeStartDelay);
 

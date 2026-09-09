@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,13 +12,13 @@ public class SimplePlayerRespawn : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        // Guardar posición inicial
+        // Guardar posiciÃ³n inicial
         CheckpointManager.Instance.SetStartPosition(transform.position, transform.rotation);
     }
 
     public void Respawn()
     {
-        // Desactivar física temporalmente
+        // Desactivar fÃ­sica temporalmente
         if (col != null) col.enabled = false;
         if (rb != null)
         {
@@ -27,7 +27,7 @@ public class SimplePlayerRespawn : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        // Obtener posición de respawn
+        // Obtener posiciÃ³n de respawn
         Vector3 spawnPos;
         Quaternion spawnRot;
         CheckpointManager.Instance.GetRespawnPoint(out spawnPos, out spawnRot);
@@ -35,7 +35,7 @@ public class SimplePlayerRespawn : MonoBehaviour
         // Teleportar
         transform.SetPositionAndRotation(spawnPos, spawnRot);
 
-        // Esperar un frame y reactivar física
+        // Esperar un frame y reactivar fÃ­sica
         Invoke(nameof(ReactivatePhysics), 0.1f);
     }
 
@@ -49,6 +49,6 @@ public class SimplePlayerRespawn : MonoBehaviour
         }
         if (col != null) col.enabled = true;
 
-        Debug.Log("Física reactivada en: " + transform.position);
+        Debug.Log("FÃ­sica reactivada en: " + transform.position);
     }
 }

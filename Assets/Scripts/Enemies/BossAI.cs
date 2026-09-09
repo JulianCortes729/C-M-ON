@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 public class BossAI : MonoBehaviour
@@ -9,26 +9,26 @@ public class BossAI : MonoBehaviour
     public Transform player;
     public BossHealth bossHealth; // <--- Agrega esta referencia para mostrar la barra
 
-    [Header("Configuración de IA")]
+    [Header("ConfiguraciÃ³n de IA")]
     public float actionCooldown = 2.5f;
     public float minJumpDistance = 4f;
 
-    // Nueva variable para controlar si la pelea empezó
+    // Nueva variable para controlar si la pelea empezÃ³
     private bool isBattleActive = false;
 
     void Start()
     {
         // --- CAMBIO IMPORTANTE ---
-        // Ya NO iniciamos el BehaviorLoop aquí.
+        // Ya NO iniciamos el BehaviorLoop aquÃ­.
         // El jefe se queda quieto esperando.
         isBattleActive = false;
     }
 
-    // --- NUEVA FUNCIÓN PÚBLICA ---
-    // Esta función la llama el Trigger de la azotea
+    // --- NUEVA FUNCIÃ“N PÃšBLICA ---
+    // Esta funciÃ³n la llama el Trigger de la azotea
     public void ActivateBoss()
     {
-        if (isBattleActive) return; // Si ya está peleando, ignorar
+        if (isBattleActive) return; // Si ya estÃ¡ peleando, ignorar
 
         isBattleActive = true;
 
@@ -38,7 +38,7 @@ public class BossAI : MonoBehaviour
             bossHealth.ShowHealthBar();
         }
 
-        // 2. (Opcional) Hacer un rugido o animación de entrada aquí
+        // 2. (Opcional) Hacer un rugido o animaciÃ³n de entrada aquÃ­
         // animator.SetTrigger("Roar");
         // Invoke("StartLoop", 2.0f); // Esperar a que termine el rugido
 
@@ -46,15 +46,15 @@ public class BossAI : MonoBehaviour
         StartCoroutine(BehaviorLoop());
     }
 
-    // Esta función detiene todo inmediatamente
+    // Esta funciÃ³n detiene todo inmediatamente
     public void DeactivateBoss()
     {
-        isBattleActive = false; // Detiene la condición del While
+        isBattleActive = false; // Detiene la condiciÃ³n del While
         StopAllCoroutines();    // Detiene el bucle de ataques inmediatamente
 
-        // Opcional: Si el jefe estaba disparando o saltando, detenemos esos scripts específicos también
+        // Opcional: Si el jefe estaba disparando o saltando, detenemos esos scripts especÃ­ficos tambiÃ©n
         if (jumpAttack != null) StopCoroutine("JumpRoutine"); // O resetear variables del script de salto
-        if (shootingAttack != null) shootingAttack.StopAttack(); // Si tienes el método público de parar disparo
+        if (shootingAttack != null) shootingAttack.StopAttack(); // Si tienes el mÃ©todo pÃºblico de parar disparo
 
         // Volver a Idle en el Animator para que no se quede congelado en pose de ataque
         // animator.Play("Idle"); 
@@ -64,12 +64,12 @@ public class BossAI : MonoBehaviour
 
     IEnumerator BehaviorLoop()
     {
-        // Pequeña espera al inicio para que el jugador se prepare
+        // PequeÃ±a espera al inicio para que el jugador se prepare
         yield return new WaitForSeconds(1f);
 
         while (isBattleActive && player != null) // Bucle infinito (mientras el jefe viva)
         {
-            if (player == null) yield break; // Si el player murió, dejamos de atacar
+            if (player == null) yield break; // Si el player muriÃ³, dejamos de atacar
 
             // 1. MEDIR DISTANCIA
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -84,7 +84,7 @@ public class BossAI : MonoBehaviour
                 // Ejecutamos el salto
                 jumpAttack.TriggerAttack();
 
-                // Calculamos cuánto esperar (duración del salto + descanso)
+                // Calculamos cuÃ¡nto esperar (duraciÃ³n del salto + descanso)
                 // Asumimos que el salto dura unos 2s en total (ida + vuelta)
                 yield return new WaitForSeconds(2.0f);
             }
@@ -93,11 +93,11 @@ public class BossAI : MonoBehaviour
                 // -- ESTRATEGIA DE LEJOS: DISPARAR --
                 shootingAttack.TriggerShoot();
 
-                // Esperamos lo que dura la ráfaga (aprox) antes de descansar
+                // Esperamos lo que dura la rÃ¡faga (aprox) antes de descansar
                 yield return new WaitForSeconds(1.5f);
             }
 
-            // 3. TIEMPO DE RECUPERACIÓN (Cooldown)
+            // 3. TIEMPO DE RECUPERACIÃ“N (Cooldown)
             // El jefe camina o respira un momento antes del siguiente ataque
             yield return new WaitForSeconds(actionCooldown);
         }

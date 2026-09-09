@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
 
 public class CoinUI : MonoBehaviour
@@ -7,10 +7,10 @@ public class CoinUI : MonoBehaviour
 
     private void Start()
     {
-        // Actualización inicial
+        // ActualizaciÃ³n inicial
         UpdateCoins(0);
 
-        // Suscripción segura al Singleton
+        // SuscripciÃ³n segura al Singleton
         if (CoinManager.Instance != null)
         {
             CoinManager.Instance.SubscribeUI(UpdateCoins);
@@ -21,7 +21,7 @@ public class CoinUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Desuscripción segura
+        // DesuscripciÃ³n segura
         if (CoinManager.Instance != null)
         {
             CoinManager.Instance.UnsubscribeUI(UpdateCoins);

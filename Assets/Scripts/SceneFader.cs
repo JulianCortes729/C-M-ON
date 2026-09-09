@@ -1,4 +1,4 @@
-using UnityEngine;
+锘縰sing UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
@@ -75,7 +75,7 @@ public class SceneFader : MonoBehaviour
         }
     }
 
-    // Transici髇 entre escenas
+    // Transici贸n entre escenas
     public void FadeToScene(GameScenes scene)
     {
         StartCoroutine(FadeSceneCoroutine(scene));
@@ -107,12 +107,12 @@ public class SceneFader : MonoBehaviour
         // Fade-out (pantalla a negro)
         yield return SceneFader.Instance.Fade(1);
 
-        // Esperar peque駉 delay por si hay animaci髇 o sonido
+        // Esperar peque帽o delay por si hay animaci贸n o sonido
         yield return new WaitForSeconds(delay);
 
         if (player != null && respawnPoint != null)
         {
-            // Desactivar colisi髇 temporalmente
+            // Desactivar colisi贸n temporalmente
             Collider col = player.GetComponent<Collider>();
             if (col != null) col.enabled = false;
 
@@ -120,7 +120,7 @@ public class SceneFader : MonoBehaviour
             player.transform.SetPositionAndRotation(respawnPoint.position, respawnPoint.rotation);
             player.GetComponent<PlayerDeathHandler>()?.ResetAfterRespawn();
 
-            // Reactivar colisi髇
+            // Reactivar colisi贸n
             if (col != null) col.enabled = true;
         }
 

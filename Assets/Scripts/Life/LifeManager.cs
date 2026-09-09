@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -62,7 +62,7 @@ public class LifeManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("LifeManager: No se encontr� jugador con tag 'Player'");
+                Debug.LogWarning("LifeManager: No se encontró jugador con tag 'Player'");
             }
         }
     }

@@ -1,11 +1,11 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
 /// <summary>
-/// Controlador de la Inteligencia Artificial (IA) de una araÒa utilizando NavMeshAgent.
-/// Implementa lÛgica de Patrullaje, PersecuciÛn con persistencia de rango dual (Detection Range y Lost Range),
-/// y mec·nica de PisotÛn (Stomp) para matar al jugador.
+/// Controlador de la Inteligencia Artificial (IA) de una ara√±a utilizando NavMeshAgent.
+/// Implementa l√≥gica de Patrullaje, Persecuci√≥n con persistencia de rango dual (Detection Range y Lost Range),
+/// y mec√°nica de Pisot√≥n (Stomp) para matar al jugador.
 /// </summary>
 /// <remarks>
 /// Requiere un componente <see cref="NavMeshAgent"/> adjunto.
@@ -18,13 +18,13 @@ public class SpiderIANavMesh : MonoBehaviour
     [Header("Referencias")]
     [Tooltip("Referencia al Transform del jugador.")]
     [SerializeField] private Transform player;
-    [Tooltip("Referencia al componente Animator de la araÒa.")]
+    [Tooltip("Referencia al componente Animator de la ara√±a.")]
     [SerializeField] private Animator animator;
 
     // --- Patrullaje ---
 
     [Header("Patrullaje")]
-    [Tooltip("Puntos a recorrer. Se requiere un mÌnimo de 2 puntos para un patrullaje v·lido.")]
+    [Tooltip("Puntos a recorrer. Se requiere un m√≠nimo de 2 puntos para un patrullaje v√°lido.")]
     [SerializeField] private Transform[] patrolPoints;
 
     [Tooltip("Define el modo de movimiento entre puntos. True: Ping-Pong (ida y vuelta). False: Loop Circular.")]
@@ -33,40 +33,40 @@ public class SpiderIANavMesh : MonoBehaviour
     [Tooltip("Velocidad de movimiento del agente durante el estado de Patrullaje.")]
     [SerializeField] private float patrolSpeed = 2f;
 
-    [Tooltip("Distancia mÌnima restante para considerar que el agente ha llegado al punto de patrulla.")]
+    [Tooltip("Distancia m√≠nima restante para considerar que el agente ha llegado al punto de patrulla.")]
     [SerializeField] private float waypointReachedDistance = 0.5f;
 
     [Tooltip("Tiempo de pausa en segundos al llegar a un punto de patrulla (0 = sin pausa).")]
     [SerializeField] private float waitTimeAtWaypoint = 0f;
 
-    // --- PersecuciÛn ---
+    // --- Persecuci√≥n ---
 
-    [Header("PersecuciÛn")]
-    [Tooltip("Distancia a la que el agente detecta al jugador e inicia la PersecuciÛn.")]
+    [Header("Persecuci√≥n")]
+    [Tooltip("Distancia a la que el agente detecta al jugador e inicia la Persecuci√≥n.")]
     [SerializeField] private float detectionRange = 8f;
 
-    [Tooltip("Distancia m·xima a la que el agente sigue persiguiendo. Si el jugador se aleja m·s all· de este rango, el temporizador de rendiciÛn comienza.")]
+    [Tooltip("Distancia m√°xima a la que el agente sigue persiguiendo. Si el jugador se aleja m√°s all√° de este rango, el temporizador de rendici√≥n comienza.")]
     [SerializeField] private float lostPlayerRange = 12f;
 
-    [Tooltip("Velocidad de movimiento del agente durante el estado de PersecuciÛn.")]
+    [Tooltip("Velocidad de movimiento del agente durante el estado de Persecuci√≥n.")]
     [SerializeField] private float chaseSpeed = 4f;
 
-    [Tooltip("Distancia mÌnima a la que el agente se detiene cerca del jugador para el ataque.")]
+    [Tooltip("Distancia m√≠nima a la que el agente se detiene cerca del jugador para el ataque.")]
     [SerializeField] private float stopChaseDistance = 1.5f;
 
-    [Tooltip("Tiempo de gracia antes de que el agente regrese a Patrullaje despuÈs de perder al jugador (salir del lostPlayerRange).")]
+    [Tooltip("Tiempo de gracia antes de que el agente regrese a Patrullaje despu√©s de perder al jugador (salir del lostPlayerRange).")]
     [SerializeField] private float returnToPatrolDelay = 2f;
 
-    // --- PisotÛn (Stomp Attack) ---
+    // --- Pisot√≥n (Stomp Attack) ---
 
-    [Header("PisotÛn (Ataque de Muerte)")]
-    [Tooltip("Margen de altura mÌnimo para considerar que el centro del jugador est· por encima de la araÒa para un pisotÛn.")]
+    [Header("Pisot√≥n (Ataque de Muerte)")]
+    [Tooltip("Margen de altura m√≠nimo para considerar que el centro del jugador est√° por encima de la ara√±a para un pisot√≥n.")]
     [SerializeField] private float stompHeightMargin = 0.3f;
-    [Tooltip("Velocidad de impacto vertical mÌnima del jugador para que el pisotÛn se considere v·lido (caÌda).")]
+    [Tooltip("Velocidad de impacto vertical m√≠nima del jugador para que el pisot√≥n se considere v√°lido (ca√≠da).")]
     [SerializeField] private float minImpactSpeed = 0.3f;
-    [Tooltip("Fuerza vertical aplicada al jugador tras un pisotÛn exitoso (muerte de la araÒa).")]
+    [Tooltip("Fuerza vertical aplicada al jugador tras un pisot√≥n exitoso (muerte de la ara√±a).")]
     [SerializeField] private float stompBounce = 5f;
-    [Tooltip("DuraciÛn de la animaciÛn de muerte de la araÒa.")]
+    [Tooltip("Duraci√≥n de la animaci√≥n de muerte de la ara√±a.")]
     [SerializeField] private float deathDuration = 1f;
 
     #endregion
@@ -77,7 +77,7 @@ public class SpiderIANavMesh : MonoBehaviour
     private Collider col;
 
     /// <summary>
-    /// Enumera los posibles estados de comportamiento de la IA de la araÒa.
+    /// Enumera los posibles estados de comportamiento de la IA de la ara√±a.
     /// </summary>
     private enum State { Patrol, Chase, Waiting, Dead, Frozen }
     private State currentState = State.Patrol;
@@ -88,19 +88,19 @@ public class SpiderIANavMesh : MonoBehaviour
     private float waitTimer = 0f;
     private bool hasValidPatrol => patrolPoints != null && patrolPoints.Length >= 2;
 
-    // --- PersecuciÛn ---
+    // --- Persecuci√≥n ---
     private float lostPlayerTimer = 0f;
 
     // --- Player ---
     private PlayerDeathHandler playerDeathHandler;
     private Rigidbody playerRb;
 
-    // --- OptimizaciÛn (Distancias al Cuadrado) ---
+    // --- Optimizaci√≥n (Distancias al Cuadrado) ---
     private float sqrDetectionRange;
     private float sqrStopChaseDistance;
     private float sqrLostPlayerRange;
 
-    // --- Control de ActualizaciÛn (OptimizaciÛn de Update) ---
+    // --- Control de Actualizaci√≥n (Optimizaci√≥n de Update) ---
     private const float UPDATE_INTERVAL = 0.1f; // Intervalo de 100ms para actualizaciones costosas (SetDestination, etc.)
     private float updateTimer = 0f;
 
@@ -114,7 +114,7 @@ public class SpiderIANavMesh : MonoBehaviour
     #region Ciclo de Vida de Unity
 
     /// <summary>
-    /// Se llama al inicio. Inicializa componentes, valida configuraciÛn y calcula valores cuadrados para optimizaciÛn.
+    /// Se llama al inicio. Inicializa componentes, valida configuraci√≥n y calcula valores cuadrados para optimizaci√≥n.
     /// </summary>
     private void Start()
     {
@@ -138,21 +138,21 @@ public class SpiderIANavMesh : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[SpiderIANavMesh] No hay suficientes patrol points (mÌnimo 2). La araÒa se detiene.", this);
+            Debug.LogWarning("[SpiderIANavMesh] No hay suficientes patrol points (m√≠nimo 2). La ara√±a se detiene.", this);
             agent.isStopped = true;
         }
     }
 
     /// <summary>
-    /// Se llama en cada frame. Contiene la lÛgica principal de la IA.
+    /// Se llama en cada frame. Contiene la l√≥gica principal de la IA.
     /// </summary>
     private void Update()
     {
-        // LÛgica de salida r·pida si el agente est· Inactivo o Muerto.
+        // L√≥gica de salida r√°pida si el agente est√° Inactivo o Muerto.
         if (currentState == State.Dead || currentState == State.Frozen)
             return;
 
-        // Verificar si el jugador existe y est· vivo.
+        // Verificar si el jugador existe y est√° vivo.
         if (player == null || !IsPlayerAlive())
         {
             if (currentState == State.Chase)
@@ -162,10 +162,10 @@ public class SpiderIANavMesh : MonoBehaviour
 
         updateTimer += Time.deltaTime;
 
-        // LÛgica de detecciÛn y transiciÛn de estado (PersecuciÛn/Patrullaje).
+        // L√≥gica de detecci√≥n y transici√≥n de estado (Persecuci√≥n/Patrullaje).
         UpdateDetectionState();
 
-        // Ejecutar la lÛgica especÌfica del estado actual.
+        // Ejecutar la l√≥gica espec√≠fica del estado actual.
         switch (currentState)
         {
             case State.Patrol:
@@ -187,7 +187,7 @@ public class SpiderIANavMesh : MonoBehaviour
 
     #endregion
 
-    #region InicializaciÛn y ValidaciÛn
+    #region Inicializaci√≥n y Validaci√≥n
 
     /// <summary>
     /// Inicializa y configura el NavMeshAgent y el Collider.
@@ -197,7 +197,7 @@ public class SpiderIANavMesh : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         col = GetComponent<Collider>();
 
-        // ConfiguraciÛn de NavMeshAgent para un movimiento m·s responsivo y org·nico.
+        // Configuraci√≥n de NavMeshAgent para un movimiento m√°s responsivo y org√°nico.
         agent.speed = patrolSpeed;
         agent.angularSpeed = 500f;
         agent.acceleration = 8f;
@@ -208,7 +208,7 @@ public class SpiderIANavMesh : MonoBehaviour
     }
 
     /// <summary>
-    /// Valida que las referencias esenciales (Player, Animator) y la configuraciÛn del NavMesh sean correctas.
+    /// Valida que las referencias esenciales (Player, Animator) y la configuraci√≥n del NavMesh sean correctas.
     /// </summary>
     private void ValidateSetup()
     {
@@ -234,38 +234,38 @@ public class SpiderIANavMesh : MonoBehaviour
         NavMeshHit hit;
         if (!NavMesh.SamplePosition(transform.position, out hit, 2f, NavMesh.AllAreas))
         {
-            Debug.LogError("[SpiderIANavMesh] No hay NavMesh cerca de la araÒa. Aseg˙rate de 'Bake' el NavMesh.", this);
+            Debug.LogError("[SpiderIANavMesh] No hay NavMesh cerca de la ara√±a. Aseg√∫rate de 'Bake' el NavMesh.", this);
         }
     }
 
     #endregion
 
-    #region LÛgica de DetecciÛn (Control de Persistencia)
+    #region L√≥gica de Detecci√≥n (Control de Persistencia)
 
     /// <summary>
-    /// Gestiona las transiciones entre Patrullaje y PersecuciÛn bas·ndose en la distancia
-    /// al jugador y los rangos de detecciÛn/pÈrdida.
+    /// Gestiona las transiciones entre Patrullaje y Persecuci√≥n bas√°ndose en la distancia
+    /// al jugador y los rangos de detecci√≥n/p√©rdida.
     /// </summary>
     private void UpdateDetectionState()
     {
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
-        // DetecciÛn: El jugador est· en el rango inicial para iniciar la persecuciÛn.
+        // Detecci√≥n: El jugador est√° en el rango inicial para iniciar la persecuci√≥n.
         bool isDetectionRange = sqrDist <= sqrDetectionRange;
 
-        // PÈrdida: El jugador se ha alejado m·s all· del rango de persistencia.
+        // P√©rdida: El jugador se ha alejado m√°s all√° del rango de persistencia.
         bool isLostRange = sqrDist > sqrLostPlayerRange;
 
-        // 1. TransiciÛn a PersecuciÛn
+        // 1. Transici√≥n a Persecuci√≥n
         if (isDetectionRange && currentState == State.Patrol)
         {
             TransitionToChase();
         }
-        // 2. TransiciÛn a Patrullaje (LÛgica de RendiciÛn)
+        // 2. Transici√≥n a Patrullaje (L√≥gica de Rendici√≥n)
         else if (isLostRange && currentState == State.Chase)
         {
             lostPlayerTimer += Time.deltaTime;
-            // Si el temporizador de rendiciÛn expira, volvemos a patrullar.
+            // Si el temporizador de rendici√≥n expira, volvemos a patrullar.
             if (lostPlayerTimer >= returnToPatrolDelay)
             {
                 TransitionToPatrol();
@@ -274,8 +274,8 @@ public class SpiderIANavMesh : MonoBehaviour
         // 3. Persistencia (Dentro de Lost Range, Fuera de Detection Range)
         else if (currentState == State.Chase)
         {
-            // Si el agente est· en modo PersecuciÛn y el jugador NO est· fuera del Lost Range,
-            // el agente persiste y el temporizador de pÈrdida se resetea.
+            // Si el agente est√° en modo Persecuci√≥n y el jugador NO est√° fuera del Lost Range,
+            // el agente persiste y el temporizador de p√©rdida se resetea.
             if (!isLostRange)
             {
                 lostPlayerTimer = 0f;
@@ -285,17 +285,17 @@ public class SpiderIANavMesh : MonoBehaviour
 
     #endregion
 
-    #region LÛgica de Estados (Updates)
+    #region L√≥gica de Estados (Updates)
 
     /// <summary>
-    /// LÛgica ejecutada durante el estado de Patrullaje.
+    /// L√≥gica ejecutada durante el estado de Patrullaje.
     /// </summary>
     private void UpdatePatrol()
     {
         if (!hasValidPatrol)
             return;
 
-        // ComprobaciÛn eficiente de llegada al waypoint.
+        // Comprobaci√≥n eficiente de llegada al waypoint.
         bool arrivedAtWaypoint = !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance;
 
         // El agente puede detenerse internamente (sin camino o velocidad muy baja)
@@ -316,19 +316,19 @@ public class SpiderIANavMesh : MonoBehaviour
     }
 
     /// <summary>
-    /// LÛgica ejecutada durante el estado de PersecuciÛn. Se ejecuta periÛdicamente (UPDATE_INTERVAL)
+    /// L√≥gica ejecutada durante el estado de Persecuci√≥n. Se ejecuta peri√≥dicamente (UPDATE_INTERVAL)
     /// para optimizar las costosas llamadas a NavMesh.
     /// </summary>
     private void UpdateChase()
     {
-        // Optimizando la actualizaciÛn del destino.
+        // Optimizando la actualizaci√≥n del destino.
         if (updateTimer >= UPDATE_INTERVAL)
         {
             updateTimer = 0f;
 
             float sqrDist = (player.position - transform.position).sqrMagnitude;
 
-            // Micro-Stop: Si est· muy cerca del jugador (distancia de ataque), se detiene.
+            // Micro-Stop: Si est√° muy cerca del jugador (distancia de ataque), se detiene.
             if (sqrDist <= sqrStopChaseDistance)
             {
                 agent.isStopped = true;
@@ -337,7 +337,7 @@ public class SpiderIANavMesh : MonoBehaviour
             else
             {
                 // El agente persigue activamente.
-                // La rendiciÛn por distancia/tiempo se maneja exclusivamente en UpdateDetectionState().
+                // La rendici√≥n por distancia/tiempo se maneja exclusivamente en UpdateDetectionState().
                 agent.isStopped = false;
                 agent.SetDestination(player.position);
             }
@@ -345,7 +345,7 @@ public class SpiderIANavMesh : MonoBehaviour
     }
 
     /// <summary>
-    /// LÛgica ejecutada durante el estado de Espera (pausa en waypoint).
+    /// L√≥gica ejecutada durante el estado de Espera (pausa en waypoint).
     /// </summary>
     private void UpdateWaiting()
     {
@@ -354,7 +354,7 @@ public class SpiderIANavMesh : MonoBehaviour
         {
             waitTimer = 0f;
             AdvanceToNextPatrolPoint();
-            // TransiciÛn implÌcita a Patrol por el cambio de destino y la reanudaciÛn del movimiento.
+            // Transici√≥n impl√≠cita a Patrol por el cambio de destino y la reanudaci√≥n del movimiento.
             currentState = State.Patrol;
         }
     }
@@ -364,7 +364,7 @@ public class SpiderIANavMesh : MonoBehaviour
     #region Transiciones de Estado
 
     /// <summary>
-    /// Transiciona el agente al estado de PersecuciÛn.
+    /// Transiciona el agente al estado de Persecuci√≥n.
     /// </summary>
     private void TransitionToChase()
     {
@@ -374,7 +374,7 @@ public class SpiderIANavMesh : MonoBehaviour
         agent.isStopped = false;
         lostPlayerTimer = 0f;
 
-        // Establecer el primer destino de persecuciÛn inmediatamente.
+        // Establecer el primer destino de persecuci√≥n inmediatamente.
         agent.SetDestination(player.position);
     }
 
@@ -389,7 +389,7 @@ public class SpiderIANavMesh : MonoBehaviour
         agent.isStopped = false;
         lostPlayerTimer = 0f;
 
-        // Reanudar patrullaje desde el punto m·s cercano.
+        // Reanudar patrullaje desde el punto m√°s cercano.
         if (hasValidPatrol)
         {
             currentPatrolIndex = FindNearestPatrolIndex();
@@ -410,12 +410,12 @@ public class SpiderIANavMesh : MonoBehaviour
 
     #endregion
 
-    #region LÛgica de Patrullaje
+    #region L√≥gica de Patrullaje
 
     /// <summary>
-    /// Encuentra el Ìndice del punto de patrullaje m·s cercano a la posiciÛn actual de la araÒa.
+    /// Encuentra el √≠ndice del punto de patrullaje m√°s cercano a la posici√≥n actual de la ara√±a.
     /// </summary>
-    /// <returns>El Ìndice del punto de patrullaje m·s cercano.</returns>
+    /// <returns>El √≠ndice del punto de patrullaje m√°s cercano.</returns>
     private int FindNearestPatrolIndex()
     {
         int bestIndex = 0;
@@ -423,7 +423,7 @@ public class SpiderIANavMesh : MonoBehaviour
 
         for (int i = 0; i < patrolPoints.Length; i++)
         {
-            // Usar sqrMagnitude para comparar distancias sin la raÌz cuadrada.
+            // Usar sqrMagnitude para comparar distancias sin la ra√≠z cuadrada.
             float sqrDist = (patrolPoints[i].position - transform.position).sqrMagnitude;
             if (sqrDist < bestSqrDist)
             {
@@ -442,7 +442,7 @@ public class SpiderIANavMesh : MonoBehaviour
     {
         if (pingPong)
         {
-            // LÛgica Ping-Pong: invierte direcciÛn al llegar a los extremos.
+            // L√≥gica Ping-Pong: invierte direcci√≥n al llegar a los extremos.
             if (currentPatrolIndex >= patrolPoints.Length - 1)
                 patrolDirection = -1;
             else if (currentPatrolIndex <= 0)
@@ -452,7 +452,7 @@ public class SpiderIANavMesh : MonoBehaviour
         }
         else
         {
-            // LÛgica Circular: reinicia al llegar al final.
+            // L√≥gica Circular: reinicia al llegar al final.
             currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
         }
 
@@ -470,7 +470,7 @@ public class SpiderIANavMesh : MonoBehaviour
 
         Transform target = patrolPoints[currentPatrolIndex];
 
-        // Verificar que el punto est· en el NavMesh antes de establecer el destino.
+        // Verificar que el punto est√° en el NavMesh antes de establecer el destino.
         NavMeshHit hit;
         if (NavMesh.SamplePosition(target.position, out hit, 2f, NavMesh.AllAreas))
         {
@@ -478,15 +478,15 @@ public class SpiderIANavMesh : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[SpiderIANavMesh] Patrol point {currentPatrolIndex} no est· en el NavMesh. Intentando el siguiente...", this);
-            // Si el punto es inv·lido, avanzamos al siguiente punto.
+            Debug.LogWarning($"[SpiderIANavMesh] Patrol point {currentPatrolIndex} no est√° en el NavMesh. Intentando el siguiente...", this);
+            // Si el punto es inv√°lido, avanzamos al siguiente punto.
             AdvanceToNextPatrolPoint();
         }
     }
 
     #endregion
 
-    #region AnimaciÛn
+    #region Animaci√≥n
 
     /// <summary>
     /// Sincroniza el estado de movimiento del agente con el Animator.
@@ -505,13 +505,13 @@ public class SpiderIANavMesh : MonoBehaviour
 
     #endregion
 
-    #region ColisiÛn y PisotÛn
+    #region Colisi√≥n y Pisot√≥n
 
     /// <summary>
-    /// Maneja la colisiÛn con el jugador para determinar si ocurre un pisotÛn (muerte de la araÒa)
-    /// o si la araÒa mata al jugador.
+    /// Maneja la colisi√≥n con el jugador para determinar si ocurre un pisot√≥n (muerte de la ara√±a)
+    /// o si la ara√±a mata al jugador.
     /// </summary>
-    /// <param name="collision">Datos de la colisiÛn.</param>
+    /// <param name="collision">Datos de la colisi√≥n.</param>
     private void OnCollisionEnter(Collision collision)
     {
         if (currentState == State.Dead || currentState == State.Frozen)
@@ -529,34 +529,34 @@ public class SpiderIANavMesh : MonoBehaviour
             playerRb = collision.collider.GetComponent<Rigidbody>();
             if (playerRb == null)
             {
-                Debug.LogWarning("[SpiderIANavMesh] Player sin Rigidbody, no se puede ejecutar lÛgica de colisiÛn de muerte.", this);
+                Debug.LogWarning("[SpiderIANavMesh] Player sin Rigidbody, no se puede ejecutar l√≥gica de colisi√≥n de muerte.", this);
                 return;
             }
         }
 
         if (IsStompAttack(collision))
         {
-            // Si el jugador pisa a la araÒa correctamente, la araÒa muere.
+            // Si el jugador pisa a la ara√±a correctamente, la ara√±a muere.
             StartCoroutine(Die(playerRb));
         }
         else
         {
-            // Si la araÒa colisiona con el jugador, la araÒa mata al jugador.
+            // Si la ara√±a colisiona con el jugador, la ara√±a mata al jugador.
             StartCoroutine(PlayerKilledSequence());
         }
     }
 
     /// <summary>
-    /// Determina si la colisiÛn con el jugador cuenta como un PisotÛn (Stomp Attack) v·lido.
+    /// Determina si la colisi√≥n con el jugador cuenta como un Pisot√≥n (Stomp Attack) v√°lido.
     /// </summary>
-    /// <param name="collision">Datos de la colisiÛn.</param>
-    /// <returns>True si el jugador pisa a la araÒa.</returns>
+    /// <param name="collision">Datos de la colisi√≥n.</param>
+    /// <returns>True si el jugador pisa a la ara√±a.</returns>
     private bool IsStompAttack(Collision collision)
     {
-        // 1. Centro del jugador est· por encima de la araÒa (margen).
+        // 1. Centro del jugador est√° por encima de la ara√±a (margen).
         bool centerAbove = player.position.y > transform.position.y + stompHeightMargin;
 
-        // 2. Al menos un punto de contacto est· en la parte superior del collider de la araÒa.
+        // 2. Al menos un punto de contacto est√° en la parte superior del collider de la ara√±a.
         bool contactAbove = false;
         foreach (ContactPoint contact in collision.contacts)
         {
@@ -567,7 +567,7 @@ public class SpiderIANavMesh : MonoBehaviour
             }
         }
 
-        // 3. El jugador est· cayendo (velocidad vertical negativa).
+        // 3. El jugador est√° cayendo (velocidad vertical negativa).
         bool falling = playerRb.velocity.y < -minImpactSpeed ||
                       collision.relativeVelocity.y < -minImpactSpeed;
 
@@ -579,7 +579,7 @@ public class SpiderIANavMesh : MonoBehaviour
     #region Muerte y Reseteo
 
     /// <summary>
-    /// Corrutina que maneja la muerte de la araÒa (por pisotÛn).
+    /// Corrutina que maneja la muerte de la ara√±a (por pisot√≥n).
     /// </summary>
     /// <param name="playerRb">Rigidbody del jugador para el rebote.</param>
     private IEnumerator Die(Rigidbody playerRb)
@@ -605,12 +605,12 @@ public class SpiderIANavMesh : MonoBehaviour
     }
 
     /// <summary>
-    /// Secuencia que se ejecuta cuando la araÒa mata al jugador (colisiÛn simple).
-    /// Congela la araÒa, mata al jugador y espera el tiempo de respawn/fade para resetearse.
+    /// Secuencia que se ejecuta cuando la ara√±a mata al jugador (colisi√≥n simple).
+    /// Congela la ara√±a, mata al jugador y espera el tiempo de respawn/fade para resetearse.
     /// </summary>
     private IEnumerator PlayerKilledSequence()
     {
-        // Congelar araÒa inmediatamente para evitar movimientos extraÒos durante la muerte del jugador.
+        // Congelar ara√±a inmediatamente para evitar movimientos extra√±os durante la muerte del jugador.
         currentState = State.Frozen;
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
@@ -621,27 +621,27 @@ public class SpiderIANavMesh : MonoBehaviour
         // Toca un sonido de ataque (Asumiendo que MultiAudioPool es un sistema de audio global).
         MultiAudioPool.Instance?.Play("spiderAttack", transform.position);
 
-        animator.SetBool("IsChase", false); // Detener la animaciÛn de correr.
+        animator.SetBool("IsChase", false); // Detener la animaci√≥n de correr.
 
         // Esperar el tiempo necesario (debe coincidir con la secuencia de muerte/respawn del jugador).
         yield return new WaitForSeconds(2f);
 
-        // Resetear la araÒa a su punto inicial.
+        // Resetear la ara√±a a su punto inicial.
         ResetToInitialState();
     }
 
     /// <summary>
-    /// MÈtodo p˙blico para resetear la araÒa a su posiciÛn, rotaciÛn y estado inicial de patrullaje.
+    /// M√©todo p√∫blico para resetear la ara√±a a su posici√≥n, rotaci√≥n y estado inicial de patrullaje.
     /// </summary>
     public void ResetToInitialState()
     {
         // Desactivar NavMeshAgent para un movimiento manual seguro.
         agent.enabled = false;
 
-        // Restaurar posiciÛn y rotaciÛn guardadas en Start().
+        // Restaurar posici√≥n y rotaci√≥n guardadas en Start().
         transform.SetPositionAndRotation(initialPosition, initialRotation);
 
-        // Reactivar y resetear par·metros del agente.
+        // Reactivar y resetear par√°metros del agente.
         agent.enabled = true;
         currentState = State.Patrol;
         agent.speed = patrolSpeed;
@@ -658,16 +658,16 @@ public class SpiderIANavMesh : MonoBehaviour
             SetDestinationToCurrentPatrolPoint();
         }
 
-        // Resetear animaciÛn a un estado neutral.
+        // Resetear animaci√≥n a un estado neutral.
         if (animator != null)
         {
             animator.ResetTrigger("Death");
             animator.SetBool("IsChase", false);
-            // Asegurarse de que el animator estÈ en un estado base (Idle)
+            // Asegurarse de que el animator est√© en un estado base (Idle)
             animator.Play("Idle", 0, 0f);
         }
 
-        Debug.Log("[SpiderIANavMesh] AraÒa reseteada a posiciÛn inicial");
+        Debug.Log("[SpiderIANavMesh] Ara√±a reseteada a posici√≥n inicial");
     }
 
     #endregion
@@ -675,9 +675,9 @@ public class SpiderIANavMesh : MonoBehaviour
     #region Utilidad
 
     /// <summary>
-    /// Verifica si el jugador est· vivo o en proceso de morir.
+    /// Verifica si el jugador est√° vivo o en proceso de morir.
     /// </summary>
-    /// <returns>True si el jugador est· disponible y no est· muriendo.</returns>
+    /// <returns>True si el jugador est√° disponible y no est√° muriendo.</returns>
     private bool IsPlayerAlive()
     {
         return playerDeathHandler == null || !playerDeathHandler.isDying;
@@ -688,15 +688,15 @@ public class SpiderIANavMesh : MonoBehaviour
     #region Gizmos de Debug
 
     /// <summary>
-    /// Dibuja Gizmos en el Editor para visualizar rangos y camino de patrulla, mejorando la depuraciÛn.
+    /// Dibuja Gizmos en el Editor para visualizar rangos y camino de patrulla, mejorando la depuraci√≥n.
     /// </summary>
     private void OnDrawGizmosSelected()
     {
-        // Rango de DetecciÛn (Amarillo)
+        // Rango de Detecci√≥n (Amarillo)
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        // Rango de PÈrdida/Persistencia (Naranja semitransparente)
+        // Rango de P√©rdida/Persistencia (Naranja semitransparente)
         if (lostPlayerRange > detectionRange)
         {
             Gizmos.color = new Color(1f, 0.64f, 0f, 0.5f);
@@ -717,14 +717,14 @@ public class SpiderIANavMesh : MonoBehaviour
                 {
                     Gizmos.DrawWireSphere(patrolPoints[i].position, 0.3f);
 
-                    // LÌneas de conexiÛn
+                    // L√≠neas de conexi√≥n
                     if (i < patrolPoints.Length - 1 && patrolPoints[i + 1] != null)
                     {
                         Gizmos.DrawLine(patrolPoints[i].position, patrolPoints[i + 1].position);
                     }
                     else if (!pingPong && i == patrolPoints.Length - 1 && patrolPoints[0] != null)
                     {
-                        // ConexiÛn del ˙ltimo al primero en modo circular (Loop)
+                        // Conexi√≥n del √∫ltimo al primero en modo circular (Loop)
                         Gizmos.DrawLine(patrolPoints[i].position, patrolPoints[0].position);
                     }
                 }
@@ -743,7 +743,7 @@ public class SpiderIANavMesh : MonoBehaviour
             }
         }
 
-        // PosiciÛn Inicial de Reseteo (Magenta) - Solo en modo Play
+        // Posici√≥n Inicial de Reseteo (Magenta) - Solo en modo Play
         if (Application.isPlaying)
         {
             Gizmos.color = Color.magenta;

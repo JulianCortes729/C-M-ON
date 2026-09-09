@@ -1,12 +1,12 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
 /// Controla el comportamiento de una moneda recolectable.
-/// - Detecta colisiÛn con el jugador.
-/// - Oculta la moneda y reproduce un efecto de partÌculas usando ParticlePool.
-/// - Dispara el evento est·tico OnCoinCollected.
-/// - Complejidad O(1) por recolecciÛn.
+/// - Detecta colisi√≥n con el jugador.
+/// - Oculta la moneda y reproduce un efecto de part√≠culas usando ParticlePool.
+/// - Dispara el evento est√°tico OnCoinCollected.
+/// - Complejidad O(1) por recolecci√≥n.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class Coin : MonoBehaviour
@@ -32,7 +32,7 @@ public class Coin : MonoBehaviour
 
     private void Awake()
     {
-        // Cachear componentes para evitar b˙squedas costosas.
+        // Cachear componentes para evitar b√∫squedas costosas.
         _collider = GetComponent<Collider>();
         _renderers = GetComponents<Renderer>();
         explosive = GetComponent<ExplosiveItem>();
@@ -42,10 +42,10 @@ public class Coin : MonoBehaviour
 
 
     /// <summary>
-    /// Detecta al jugador y ejecuta la recolecciÛn.
+    /// Detecta al jugador y ejecuta la recolecci√≥n.
     /// - Oculta visuales.
     /// - Llama al evento global.
-    /// - Reproduce partÌculas desde el pool.
+    /// - Reproduce part√≠culas desde el pool.
     /// - Destruye la moneda.
     /// </summary>
     private void OnTriggerEnter(Collider other)
@@ -65,7 +65,7 @@ public class Coin : MonoBehaviour
             return;
         }
 
-        //normal -> comportamiento cl·sico
+        //normal -> comportamiento cl√°sico
         _collider.enabled = false;
 
         foreach (var r in _renderers)

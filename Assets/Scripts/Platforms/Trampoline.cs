@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +13,7 @@ public class Trampoline : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Rigidbody rb = collision.rigidbody;
-            if (rb != null && rb.velocity.y <= 0) // Solo si ven�a cayendo
+            if (rb != null && rb.velocity.y <= 0) // Solo si venía cayendo
             {
                 // Resetea la velocidad vertical y aplica el impulso
                 rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);

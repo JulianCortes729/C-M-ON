@@ -1,16 +1,16 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    // PROPIEDAD EST¡TICA: Acceso global desde cualquier script
+    // PROPIEDAD EST√ÅTICA: Acceso global desde cualquier script
     public static SceneLoader Instance { get; private set; }
 
     private SceneFader fader;
 
     private void Awake()
     {
-        // ImplementaciÛn Singleton cl·sica
+        // Implementaci√≥n Singleton cl√°sica
         if (Instance == null)
         {
             Instance = this;
@@ -29,7 +29,7 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadScene(GameScenes scene)
     {
-        // Seguridad: Si el fader se perdiÛ (porque era de una escena vieja), b˙scalo de nuevo
+        // Seguridad: Si el fader se perdi√≥ (porque era de una escena vieja), b√∫scalo de nuevo
         if (fader == null) fader = FindObjectOfType<SceneFader>();
 
         if (fader != null)

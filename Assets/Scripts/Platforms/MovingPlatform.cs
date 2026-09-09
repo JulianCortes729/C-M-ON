@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -6,7 +6,7 @@ using UnityEngine;
 public class MovingPlatform : MonoBehaviour
 {
     [Header("Movimiento")]
-    [Tooltip("Puntos por donde se mover·. Los null ser·n ignorados autom·ticamente.")]
+    [Tooltip("Puntos por donde se mover√°. Los null ser√°n ignorados autom√°ticamente.")]
     public Transform[] waypoints;
 
     [Tooltip("Velocidad de movimiento en unidades por segundo.")]
@@ -15,7 +15,7 @@ public class MovingPlatform : MonoBehaviour
     [Tooltip("Si vuelve al inicio (loop) o hace ping-pong entre extremos.")]
     public bool loop = true;
 
-    [Header("ConfiguraciÛn")]
+    [Header("Configuraci√≥n")]
     [Tooltip("Distancia a la que se considera que la plataforma ha alcanzado el waypoint.")]
     public float reachThreshold = 0.1f;
 
@@ -25,7 +25,7 @@ public class MovingPlatform : MonoBehaviour
     private bool movingForward = true;
     private float reachThresholdSqr;
 
-    // Rigidbody de la plataforma para moverla con fÌsica (evita jitter)
+    // Rigidbody de la plataforma para moverla con f√≠sica (evita jitter)
     private Rigidbody rb;
 
     void OnValidate()
@@ -37,7 +37,7 @@ public class MovingPlatform : MonoBehaviour
 
     void Start()
     {
-        // Preparar lista de waypoints v·lidos (ignorando nulls)
+        // Preparar lista de waypoints v√°lidos (ignorando nulls)
         validWaypoints.Clear();
         if (waypoints != null)
         {
@@ -55,17 +55,17 @@ public class MovingPlatform : MonoBehaviour
         rb.isKinematic = true; // controlamos movimiento manualmente con MovePosition
         rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-        // Si no hay waypoints v·lidos, desactivar el componente para ahorrar CPU
+        // Si no hay waypoints v√°lidos, desactivar el componente para ahorrar CPU
         if (validWaypoints.Count == 0)
         {
             enabled = false;
             return;
         }
 
-        // Asegurar Ìndice inicial v·lido
+        // Asegurar √≠ndice inicial v√°lido
         currentWaypoint = Mathf.Clamp(currentWaypoint, 0, validWaypoints.Count - 1);
 
-        // Asegurar posiciÛn inicial exacta en caso de diferencia
+        // Asegurar posici√≥n inicial exacta en caso de diferencia
         rb.position = transform.position;
     }
 
@@ -77,7 +77,7 @@ public class MovingPlatform : MonoBehaviour
 
         Vector3 targetPos = validWaypoints[currentWaypoint].position;
 
-        // Mover usando Rigidbody.MovePosition para que el motor de fÌsica lo procese correctamente
+        // Mover usando Rigidbody.MovePosition para que el motor de f√≠sica lo procese correctamente
         Vector3 newPos = Vector3.MoveTowards(rb.position, targetPos, speed * Time.fixedDeltaTime);
         rb.MovePosition(newPos);
 
@@ -90,8 +90,8 @@ public class MovingPlatform : MonoBehaviour
     }
 
     /// <summary>
-    /// Avanza el Ìndice de waypoint seg˙n el modo (loop o ping-pong).
-    /// Mantiene currentWaypoint dentro de lÌmites v·lidos.
+    /// Avanza el √≠ndice de waypoint seg√∫n el modo (loop o ping-pong).
+    /// Mantiene currentWaypoint dentro de l√≠mites v√°lidos.
     /// </summary>
     private void AdvanceWaypoint(int count)
     {

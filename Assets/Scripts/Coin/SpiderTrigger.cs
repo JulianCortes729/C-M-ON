@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,11 +12,11 @@ public class SpiderTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Trigger detectó: {other.name} con tag: {other.tag}");
+        Debug.Log($"Trigger detectÃ³: {other.name} con tag: {other.tag}");
 
         if (other.CompareTag("Spider"))
         {
-            Debug.Log("¡Araña detectada! Activando explosivo");
+            Debug.Log("Â¡AraÃ±a detectada! Activando explosivo");
             parentExplosive?.OnSpiderRangeEntered();
         }
     }

@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class BossDeathFade : MonoBehaviour
 {
-    [Header("Configuración")]
+    [Header("ConfiguraciÃ³n")]
     public float fadeDuration = 2.0f;
 
     [Header("Material Transparente")]
-    public Material transparentMaterial; // <--- ARRASTRA AQUÍ TU MATERIAL 'Boss_Transparent_Mat'
+    public Material transparentMaterial; // <--- ARRASTRA AQUÃ TU MATERIAL 'Boss_Transparent_Mat'
 
     public void StartFadeOut()
     {
@@ -32,7 +32,7 @@ public class BossDeathFade : MonoBehaviour
                 newMats[i] = new Material(transparentMaterial);
 
                 // Opcional: Si el jefe tiene texturas diferentes en cada parte, 
-                // aquí habría que copiar la textura del material viejo al nuevo.
+                // aquÃ­ habrÃ­a que copiar la textura del material viejo al nuevo.
                 // newMats[i].mainTexture = r.materials[i].mainTexture;
             }
 
@@ -62,7 +62,7 @@ public class BossDeathFade : MonoBehaviour
             yield return null;
         }
 
-        // 3. ADIÓS
+        // 3. ADIÃ“S
         Destroy(gameObject);
 
         // 4. Cambiar a la escena "ContinueScene" si existe el SceneLoader o como fallback usar SceneManager

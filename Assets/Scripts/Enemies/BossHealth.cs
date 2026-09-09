@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI; // Necesario para controlar la UI
 
 public class BossHealth : MonoBehaviour
 {
-    [Header("Configuración de Vida")]
+    [Header("ConfiguraciÃ³n de Vida")]
     public int maxHealth = 100;
     private int currentHealth;
 
     [Header("Referencias UI")]
-    public Slider healthBarSlider; // Arrastra aquí el Slider de la barra de vida
+    public Slider healthBarSlider; // Arrastra aquÃ­ el Slider de la barra de vida
     public GameObject healthBarObject; // El objeto padre del Canvas (para ocultarlo al morir)
 
     [Header("Referencias Jefe")]
@@ -30,7 +30,7 @@ public class BossHealth : MonoBehaviour
         }
     }
 
-    // --- NUEVA FUNCIÓN ---
+    // --- NUEVA FUNCIÃ“N ---
     public void ShowHealthBar()
     {
         if (healthBarObject != null)
@@ -41,11 +41,11 @@ public class BossHealth : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        if (currentHealth <= 0) return; // Ya está muerto
+        if (currentHealth <= 0) return; // Ya estÃ¡ muerto
 
         currentHealth -= damageAmount;
 
-        // Evitamos números negativos
+        // Evitamos nÃºmeros negativos
         if (currentHealth < 0) currentHealth = 0;
 
         UpdateHealthBar();
@@ -57,7 +57,7 @@ public class BossHealth : MonoBehaviour
         }
         else
         {
-            // Opcional: Animación de recibir daño
+            // Opcional: AnimaciÃ³n de recibir daÃ±o
             // if(animator) animator.SetTrigger("Hit");
         }
     }
@@ -78,13 +78,13 @@ public class BossHealth : MonoBehaviour
             healthBarObject.SetActive(false);
         }
 
-        // Opcional: ¿Quieres que el jefe recupere vida si te vas?
+        // Opcional: Â¿Quieres que el jefe recupere vida si te vas?
         // ResetHealth(); 
     }
 
     void Die()
     {
-        Debug.Log("¡Jefe Derrotado!");
+        Debug.Log("Â¡Jefe Derrotado!");
 
         // 1. Apagar la IA (Cerebro)
         if (bossAI != null)
@@ -93,10 +93,10 @@ public class BossHealth : MonoBehaviour
             bossAI.enabled = false;
         }
 
-        // 2. Apagar Físicas
+        // 2. Apagar FÃ­sicas
         //if (bossCollider != null) bossCollider.enabled = false;
 
-        // --- AQUÍ ESTÁ EL ARREGLO ---
+        // --- AQUÃ ESTÃ EL ARREGLO ---
         if (attack != null)
         {
             // PRIMERO: Matamos la corrutina de los disparos fantasmas
@@ -109,7 +109,7 @@ public class BossHealth : MonoBehaviour
         // 3. Ocultar barra vida
         if (healthBarObject != null) healthBarObject.SetActive(false);
 
-        // 4. Animación muerte
+        // 4. AnimaciÃ³n muerte
         if (animator != null) animator.SetTrigger("Die");
 
         // 5. Fade Out

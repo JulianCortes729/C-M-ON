@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// Sistema de pooling genérico para reutilizar partículas y efectos visuales.
+/// Sistema de pooling genÃ©rico para reutilizar partÃ­culas y efectos visuales.
 /// Evita Instantiate/Destroy para mejorar el rendimiento.
 /// </summary>
 public class MultiParticlePool : MonoBehaviour
@@ -12,21 +12,21 @@ public class MultiParticlePool : MonoBehaviour
     [System.Serializable]
     public class ParticleEntry
     {
-        [Tooltip("Identificador único para este tipo de partícula")]
+        [Tooltip("Identificador Ãºnico para este tipo de partÃ­cula")]
         public string key;
 
-        [Tooltip("Prefab del sistema de partículas o efecto visual")]
+        [Tooltip("Prefab del sistema de partÃ­culas o efecto visual")]
         public GameObject prefab;
 
         [Tooltip("Cantidad de instancias pre-creadas en el pool")]
         [Range(1, 50)]
         public int poolSize = 5;
 
-        [Tooltip("Si es true, se crearán más instancias si el pool se queda sin objetos")]
+        [Tooltip("Si es true, se crearÃ¡n mÃ¡s instancias si el pool se queda sin objetos")]
         public bool expandable = true;
     }
 
-    [Header("Configuración del Pool")]
+    [Header("ConfiguraciÃ³n del Pool")]
     [SerializeField] private List<ParticleEntry> particleEntries = new List<ParticleEntry>();
 
     // Estructura de datos para cada pool individual
@@ -69,7 +69,7 @@ public class MultiParticlePool : MonoBehaviour
 
     /// <summary>
     /// Crea todos los pools definidos en particleEntries.
-    /// Time Complexity: O(n*m) donde n es el número de entries y m el poolSize de cada uno
+    /// Time Complexity: O(n*m) donde n es el nÃºmero de entries y m el poolSize de cada uno
     /// </summary>
     private void InitializePools()
     {
@@ -131,12 +131,12 @@ public class MultiParticlePool : MonoBehaviour
     #region Public API
 
     /// <summary>
-    /// Reproduce una partícula desde el pool en la posición y rotación especificadas.
+    /// Reproduce una partÃ­cula desde el pool en la posiciÃ³n y rotaciÃ³n especificadas.
     /// Time Complexity: O(1) amortizado
     /// </summary>
-    /// <param name="key">Identificador del tipo de partícula</param>
-    /// <param name="position">Posición donde reproducir</param>
-    /// <param name="rotation">Rotación del efecto</param>
+    /// <param name="key">Identificador del tipo de partÃ­cula</param>
+    /// <param name="position">PosiciÃ³n donde reproducir</param>
+    /// <param name="rotation">RotaciÃ³n del efecto</param>
     /// <returns>GameObject del efecto instanciado, o null si falla</returns>
     public GameObject PlayParticle(string key, Vector3 position, Quaternion rotation)
     {
@@ -153,7 +153,7 @@ public class MultiParticlePool : MonoBehaviour
             return null;
         }
 
-        // Configurar posición y rotación
+        // Configurar posiciÃ³n y rotaciÃ³n
         obj.transform.position = position;
         obj.transform.rotation = rotation;
         obj.SetActive(true);
@@ -182,7 +182,7 @@ public class MultiParticlePool : MonoBehaviour
     }
 
     /// <summary>
-    /// Obtiene un objeto del pool (versión sin rotación, usa Quaternion.identity).
+    /// Obtiene un objeto del pool (versiÃ³n sin rotaciÃ³n, usa Quaternion.identity).
     /// Time Complexity: O(1) amortizado
     /// </summary>
     public GameObject PlayParticle(string key, Vector3 position)
@@ -192,7 +192,7 @@ public class MultiParticlePool : MonoBehaviour
 
     /// <summary>
     /// Devuelve manualmente un objeto al pool.
-    /// Útil para efectos que no son ParticleSystems y necesitas controlar su duración.
+    /// Ãštil para efectos que no son ParticleSystems y necesitas controlar su duraciÃ³n.
     /// Time Complexity: O(1)
     /// </summary>
     /// <param name="key">Identificador del pool</param>
@@ -209,7 +209,7 @@ public class MultiParticlePool : MonoBehaviour
 
         if (!pool.inUse.Contains(obj))
         {
-            Debug.LogWarning($"[MultiParticlePool] Objeto '{obj.name}' no está en uso en el pool '{key}'");
+            Debug.LogWarning($"[MultiParticlePool] Objeto '{obj.name}' no estÃ¡ en uso en el pool '{key}'");
             return;
         }
 
@@ -228,7 +228,7 @@ public class MultiParticlePool : MonoBehaviour
     }
 
     /// <summary>
-    /// Limpia todos los pools (útil al cambiar de escena).
+    /// Limpia todos los pools (Ãºtil al cambiar de escena).
     /// Time Complexity: O(n) donde n es la cantidad total de objetos en todos los pools
     /// </summary>
     public void ClearAllPools()
@@ -256,7 +256,7 @@ public class MultiParticlePool : MonoBehaviour
     #region Internal Methods
 
     /// <summary>
-    /// Obtiene un objeto disponible del pool, expandiéndolo si es necesario.
+    /// Obtiene un objeto disponible del pool, expandiÃ©ndolo si es necesario.
     /// Time Complexity: O(1) amortizado
     /// </summary>
     private GameObject GetFromPool(Pool pool)
@@ -286,12 +286,12 @@ public class MultiParticlePool : MonoBehaviour
     }
 
     /// <summary>
-    /// Corrutina que retorna automáticamente un ParticleSystem al pool cuando termina.
+    /// Corrutina que retorna automÃ¡ticamente un ParticleSystem al pool cuando termina.
     /// Time Complexity: O(1)
     /// </summary>
     private System.Collections.IEnumerator ReturnToPoolWhenDone(string key, GameObject obj, ParticleSystem ps)
     {
-        // Esperar a que todas las partículas hayan terminado
+        // Esperar a que todas las partÃ­culas hayan terminado
         yield return new WaitWhile(() => ps.IsAlive(true));
 
         ReturnToPool(key, obj);
@@ -302,7 +302,7 @@ public class MultiParticlePool : MonoBehaviour
     #region Debug & Utility
 
     /// <summary>
-    /// Muestra estadísticas de uso de los pools en consola.
+    /// Muestra estadÃ­sticas de uso de los pools en consola.
     /// </summary>
     [ContextMenu("Show Pool Statistics")]
     public void ShowPoolStatistics()

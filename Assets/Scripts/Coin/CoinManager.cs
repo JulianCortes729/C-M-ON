@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class CoinManager : MonoBehaviour
 {
-    [Header("Configuración")]
+    [Header("ConfiguraciÃ³n")]
     [SerializeField] private int coinsForSecretLevel = 20;
 
     // Evento privado (solo CoinManager y CoinUI lo usan)
@@ -42,8 +42,8 @@ public class CoinManager : MonoBehaviour
 
     private void UnlockSecretLevel()
     {
-        Debug.Log("¡Nivel secreto desbloqueado!");
-        // Aquí podrías habilitar un portal, puerta o cargar una escena.
+        Debug.Log("Â¡Nivel secreto desbloqueado!");
+        // AquÃ­ podrÃ­as habilitar un portal, puerta o cargar una escena.
     }
 
 

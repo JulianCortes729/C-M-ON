@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,10 +14,10 @@ public class SlipperyRamp : MonoBehaviour
             Rigidbody rb = collision.rigidbody;
             if (rb != null)
             {
-                // Calcula la dirección paralela a la rampa
+                // Calcula la direcciÃ³n paralela a la rampa
                 Vector3 slideDir = Vector3.ProjectOnPlane(Physics.gravity, collision.contacts[0].normal).normalized;
 
-                // Aplica fuerza para que resbale en esa dirección
+                // Aplica fuerza para que resbale en esa direcciÃ³n
                 rb.AddForce(slideDir * slideForce, ForceMode.Acceleration);
             }
         }

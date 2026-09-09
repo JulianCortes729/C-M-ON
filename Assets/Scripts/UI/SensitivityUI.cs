@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -10,7 +10,7 @@ public class SensitivityUI : MonoBehaviour
     #region Serialized Fields
 
     [Header("References")]
-    // Referencia al panel HIJO que contiene las imágenes y sliders.
+    // Referencia al panel HIJO que contiene las imÃ¡genes y sliders.
     // ESTE es el objeto que se apaga y prende.
     [SerializeField] private GameObject visualContent;
 
@@ -41,7 +41,7 @@ public class SensitivityUI : MonoBehaviour
         cursorController = FindObjectOfType<CursorController>();
 
         if (cursorController == null)
-            Debug.LogError("[SensitivityUI] ¡No se encontró CursorController en la escena!");
+            Debug.LogError("[SensitivityUI] Â¡No se encontrÃ³ CursorController en la escena!");
     }
 
     private void OnEnable()
@@ -59,9 +59,9 @@ public class SensitivityUI : MonoBehaviour
         LoadSavedValues();
         ValidateReferences();
 
-        // 3. SINCRONIZACIÓN INICIAL (CRUCIAL)
-        // Preguntamos al controller: "¿Cómo estás ahora mismo?" y actualizamos la visual.
-        // Esto arregla el bug de que el menú quede abierto si la escena se reinicia.
+        // 3. SINCRONIZACIÃ“N INICIAL (CRUCIAL)
+        // Preguntamos al controller: "Â¿CÃ³mo estÃ¡s ahora mismo?" y actualizamos la visual.
+        // Esto arregla el bug de que el menÃº quede abierto si la escena se reinicia.
         if (cursorController != null)
         {
             HandleMenuStateChanged(cursorController.IsSettingsOpen);
@@ -81,7 +81,7 @@ public class SensitivityUI : MonoBehaviour
 
     #region Event Handlers
 
-    // Esta función se llama automáticamente cuando el Controller avisa, 
+    // Esta funciÃ³n se llama automÃ¡ticamente cuando el Controller avisa, 
     // O manualmente en el Start para sincronizar.
     private void HandleMenuStateChanged(bool isOpen)
     {
@@ -129,7 +129,7 @@ public class SensitivityUI : MonoBehaviour
 
     private void ValidateReferences()
     {
-        if (visualContent == null) Debug.LogWarning("[SensitivityUI] ¡Falta asignar 'Visual Content'!");
+        if (visualContent == null) Debug.LogWarning("[SensitivityUI] Â¡Falta asignar 'Visual Content'!");
         if (horizontalSlider == null) Debug.LogWarning("[SensitivityUI] Falta Slider Horizontal");
         // ... resto de validaciones
     }

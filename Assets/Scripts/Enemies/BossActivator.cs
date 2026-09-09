@@ -1,19 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class BossActivator : MonoBehaviour
 {
     [Header("Referencias")]
-    public BossAI bossAI;   // Arrastra aquí al Jefe
-    public BossHealth bossHealth; // Arrastra aquí el script de vida del jefe
+    public BossAI bossAI;   // Arrastra aquÃ­ al Jefe
+    public BossHealth bossHealth; // Arrastra aquÃ­ el script de vida del jefe
     public GameObject wallToClose; // Opcional: Una pared invisible para encerrar al player
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("¡Player entró en la zona! Jefe Activado.");
+            Debug.Log("Â¡Player entrÃ³ en la zona! Jefe Activado.");
 
-            // 1. Activar lógica del Jefe
+            // 1. Activar lÃ³gica del Jefe
             if (bossAI != null)
             {
                 bossAI.ActivateBoss();
@@ -34,18 +34,18 @@ public class BossActivator : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("¡Player salió de la zona! Jefe Desactivado.");
+            Debug.Log("Â¡Player saliÃ³ de la zona! Jefe Desactivado.");
 
-            // 1. Desactivar lógica del Jefe
+            // 1. Desactivar lÃ³gica del Jefe
             if (bossAI != null)
             {
-                bossAI.DeactivateBoss(); // <--- Necesitamos crear esta función en BossAI
+                bossAI.DeactivateBoss(); // <--- Necesitamos crear esta funciÃ³n en BossAI
             }
 
             // 2. Ocultar Barra de Vida
             if (bossHealth != null)
             {
-                bossHealth.HideHealthBar(); // <--- Necesitamos crear esta función en BossHealth
+                bossHealth.HideHealthBar(); // <--- Necesitamos crear esta funciÃ³n en BossHealth
             }
 
             // (Opcional) Abrir pared si el player huye

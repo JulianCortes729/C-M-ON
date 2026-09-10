@@ -15,11 +15,13 @@ sysinfo.txt
 !*.meta
 
 # ==================== #
-# Visual Studio / Rider #
+# Visual Studio / Rider / VS Code #
 # ==================== #
 .vs/
+.vscode/
 .idea/
 *.sln
+*.slnx
 *.csproj
 *.unityproj
 *.user
@@ -65,3 +67,6 @@ Packages/manifest-temp.json
 *.bak
 *.tmp
 *.orig
+
+.claude/
+CLAUDE.md

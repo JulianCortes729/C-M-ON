@@ -70,3 +70,12 @@ Packages/manifest-temp.json
 
 .claude/
 CLAUDE.md
+# Builds y basura de IDE
+/webgl_sharing/
+*.zip
+UpgradeLog.htm
+/[Bb]uild/
+/[Bb]uilds/
+*.slnx
+*.sln
+*.csproj

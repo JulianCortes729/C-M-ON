@@ -83,6 +83,4 @@ Assets/Plugins/**            linguist-vendored
 Assets/ThirdParty/**         linguist-vendored
 
 # Librerias de terceros fuera de las estadisticas de lenguaje
-Assets/TextMesh?Pro/**       linguist-vendored
 Assets/AssetsExternos/**     linguist-vendored
-Assets/Plugins/**            linguist-vendored
